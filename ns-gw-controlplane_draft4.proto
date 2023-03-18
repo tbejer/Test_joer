@@ -1,0 +1,146 @@
+//****************************************************
+// The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+// "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+// "OPTIONAL" in this document are to be interpreted as described in BCP
+// 14 [RFC2119] [RFC8174] when, and only when, they appear in all
+// capitals 
+//****************************************************
+
+//***************************
+// Version based on list of singleOpjects payload, requested by GET, POST, PUT, or DELETE
+//***************************
+
+syntax = "proto3";
+
+package lora_alliance.nsgw.data_plane.draft04;
+
+import "google/protobuf/duration.proto";
+
+message Payload {
+    repeated SingleObject single_object = 1;
+}
+
+message SingleObject {
+    oneof AllObjects {
+
+        Empty empty = 1;
+
+        Identity identity = 2;
+        RegistrationResponse reg_response = 3;
+        Uptime uptime = 4;
+        TimeInfo time_info = 5;
+
+        Inventory inventory = 11;
+        Equipment equipment = 12;
+        Versions versions = 13;
+        Capabilities capabilities = 14;
+
+        RegionOfOperation region_of_operation = 21;
+        RegionOfOperationResponse region_of_ops_response = 22;
+
+    }
+}
+
+// Empty message for indication No Error, used as response for read only value transmission
+// in a list or single objects. 
+message Empty {}
+
+// Identity of the GW as EUI. The identity is sent to the GW as first message after successfull setup
+// of the connectivity. If the GW is not yet registred, the Identity will trigger the GW registration.
+message Identity {
+  //mandatory: Extended Unique Identifier (EUI-64) of the gateway. Each gateway SHALL have an assigned gw_eui.
+  //The gw_eui is a globally unique gateway identifier in the IEEE EUI64 address space, managed by the OUI holder of the EUI. 
+  fixed64 gw_eui = 1;
+  
+  //mandatory: Version and subversion of the NS-GW interface that are suppored by the GW.
+  int32 version = 2;
+  int32 sub_version = 3;  //for experimental versions, a negativ subversion number SHALL be used. 
+
+}
+
+message RegistrationResponse {
+    message RegistrationSuccess{
+        fixed32  gw_addr = 1;
+    }
+    message RegistrationFailure {
+        enum RegistrationError {
+            UNKNOWN_REG_ERROR = 0;
+            GW_NOT_KNOWN = 1;
+            GW_NOT_ALLOWED = 2;
+            VERSION_NOT_SUPPORTED = 3;
+        }
+
+        RegistrationError error = 1;
+        google.protobuf.Duration idle_time=2;
+    }
+
+    oneof registration_response {
+        RegistrationSuccess registration_success = 1;
+        RegistrationFailure registration_failure = 2;
+    }
+
+}
+
+// system uptime since last boot in seconds. 
+message Uptime {
+    uint64 uptime = 1;
+}
+
+// TimeInfo is sent from NS to GW to indicate the current GPS Time and the number of leapseconds passed since GPS 0
+message TimeInfo {
+    // GPS-Time in milliseconds
+    uint64 time = 1;
+
+    // number of leap seconds since GPS zero (Jan 6th )
+    uint32 leap_seconds = 2;
+}
+
+// read only inventory description
+message Inventory {
+    uint32 nb_interfaces = 3;             //Number of WAN Interfaces
+    uint32 nb_radio_units = 4;            //Number of radio units of the GW
+    uint32 nb_antennas = 5;               //Number of LoRa Antennas
+    uint32 nb_CPUs = 6;                   //Number of CPUs for system performance
+    uint32 ram = 8;                       //size of RAM in MByte for memory usage
+    uint32 nb_file_systems = 9;           //File systems for usage statistics. 
+}
+
+// read only equipment description 
+message Equipment{
+    uint32 gw_manufacturer = 1;            //LoRa Alliance vendor ID. MUST be set to 0 if manufacturer is not a member of the LA.
+    string gw_model = 2;                   //Gateway Model as defined by the manufacturer
+    string serial_number = 3;              //Serial Number as assigned by the manufacturer
+    string hw_revision = 4;                //GW hardware revision, assigned by the manufacturer 
+}
+
+message Versions {
+    string os_version = 1;
+    string fw_version = 2;
+    string sw_version = 3;
+    string hal_version = 4;
+    string fpga_version = 5;
+    string customizing = 6;
+    string patch_level = 7;
+}
+
+message RegionOfOperation {
+    uint32 region = 1;   
+}
+
+message RegionOfOperationResponse {
+    message RegionOfOperationSuccess {
+
+    }
+    message RegionOfOperationFailure {
+
+    }
+
+    oneof region_of_operation_response {
+        RegionOfOperationSuccess region_of_operation_success = 1;
+        RegionOfOperationFailure region_of_operation_failure = 2;
+    }
+
+}
+
+message Capabilities {}
+
