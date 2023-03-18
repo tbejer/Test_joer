@@ -33,10 +33,13 @@ message SingleObject {
         Inventory inventory = 11;
         Equipment equipment = 12;
         Versions versions = 13;
-        Capabilities capabilities = 14;
 
         RegionOfOperation region_of_operation = 21;
         RegionOfOperationResponse region_of_ops_response = 22;
+
+        RadioUnitCapabilities radio_unit_capabilities = 31;
+        RadioUnitConfig radio_unit_config = 32;
+        RadioUnitResponse radio_unit_resp = 33;
 
     }
 }
@@ -47,10 +50,11 @@ enum GwType {
 
 // Empty message for indication No Error, used as response for read only value transmission
 // in a list or single objects. 
-message Empty {}
 
+message Empty {}
 // Identity of the GW as EUI. The identity is sent to the GW as first message after successfull setup
 // of the connectivity. If the GW is not yet registred, the Identity will trigger the GW registration.
+
 message Identity {
   //mandatory: Extended Unique Identifier (EUI-64) of the gateway. Each gateway SHALL have an assigned gw_eui.
   //The gw_eui is a globally unique gateway identifier in the IEEE EUI64 address space, managed by the OUI holder of the EUI. 
@@ -148,5 +152,11 @@ message RegionOfOperationResponse {
 
 }
 
-message Capabilities {}
+message RadioUnitCapabilities {}
+
+message AntennaCapabilities {}
+
+message DataRateTable {}
+
+message ChannelConfiguration {}
 
