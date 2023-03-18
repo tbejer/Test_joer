@@ -12,7 +12,7 @@
 
 syntax = "proto3";
 
-package lora_alliance.nsgw.data_plane.draft04;
+package lora_alliance.nsgw.control_plane.draft04;
 
 import "google/protobuf/duration.proto";
 
@@ -41,6 +41,10 @@ message SingleObject {
     }
 }
 
+enum GwType {
+    GW_TYPE_A = 0;  // Type A are GWs which can distribute their capabilities to one or multiple antennas.
+}
+
 // Empty message for indication No Error, used as response for read only value transmission
 // in a list or single objects. 
 message Empty {}
@@ -52,9 +56,11 @@ message Identity {
   //The gw_eui is a globally unique gateway identifier in the IEEE EUI64 address space, managed by the OUI holder of the EUI. 
   fixed64 gw_eui = 1;
   
+  GwType gw_type = 2;
+  
   //mandatory: Version and subversion of the NS-GW interface that are suppored by the GW.
-  int32 version = 2;
-  int32 sub_version = 3;  //for experimental versions, a negativ subversion number SHALL be used. 
+  int32 version = 3;
+  int32 sub_version = 4;  //for experimental versions, a negativ subversion number SHALL be used. 
 
 }
 
