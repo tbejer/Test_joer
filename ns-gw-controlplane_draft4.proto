@@ -25,14 +25,14 @@ message SingleObject {
 
         Empty empty = 1;
 
-        Identity identity = 2;
+        RegistrationRequest reg_request = 2;
         RegistrationResponse reg_response = 3;
         Uptime uptime = 4;
         TimeInfo time_info = 5;
 
-        Inventory inventory = 11;
-        Equipment equipment = 12;
-        Versions versions = 13;
+        Equipment equipment = 11;
+        Versions versions = 12;
+        Inventory inventory = 13;
 
         RegionOfOperation region_of_operation = 21;
         RegionOfOperationResponse region_of_ops_response = 22;
@@ -40,6 +40,7 @@ message SingleObject {
         RadioUnitCapabilities radio_unit_capabilities = 31;
         RadioUnitConfig radio_unit_config = 32;
         RadioUnitResponse radio_unit_resp = 33;
+        RadioUnitEvent radio_unit_event = 34;
 
     }
 }
@@ -50,16 +51,16 @@ enum GwType {
 
 // Empty message for indication No Error, used as response for read only value transmission
 // in a list or single objects. 
-
 message Empty {}
+
 // Identity of the GW as EUI. The identity is sent to the GW as first message after successfull setup
 // of the connectivity. If the GW is not yet registred, the Identity will trigger the GW registration.
-
-message Identity {
+message RegistrationRequest {
   //mandatory: Extended Unique Identifier (EUI-64) of the gateway. Each gateway SHALL have an assigned gw_eui.
   //The gw_eui is a globally unique gateway identifier in the IEEE EUI64 address space, managed by the OUI holder of the EUI. 
   fixed64 gw_eui = 1;
   
+  // optional: if not defined, GW_TYPE_A is considered
   GwType gw_type = 2;
   
   //mandatory: Version and subversion of the NS-GW interface that are suppored by the GW.
@@ -72,12 +73,14 @@ message RegistrationResponse {
     message RegistrationSuccess{
         fixed32  gw_addr = 1;
     }
+    
     message RegistrationFailure {
         enum RegistrationError {
             UNKNOWN_REG_ERROR = 0;
             GW_NOT_KNOWN = 1;
             GW_NOT_ALLOWED = 2;
-            VERSION_NOT_SUPPORTED = 3;
+            GW_TYPE_NOT_SUPPORTED = 3;
+            VERSION_NOT_SUPPORTED = 4;
         }
 
         RegistrationError error = 1;
@@ -105,16 +108,6 @@ message TimeInfo {
     uint32 leap_seconds = 2;
 }
 
-// read only inventory description
-message Inventory {
-    uint32 nb_interfaces = 3;             //Number of WAN Interfaces
-    uint32 nb_radio_units = 4;            //Number of radio units of the GW
-    uint32 nb_antennas = 5;               //Number of LoRa Antennas
-    uint32 nb_CPUs = 6;                   //Number of CPUs for system performance
-    uint32 ram = 8;                       //size of RAM in MByte for memory usage
-    uint32 nb_file_systems = 9;           //File systems for usage statistics. 
-}
-
 // read only equipment description 
 message Equipment{
     uint32 gw_manufacturer = 1;            //LoRa Alliance vendor ID. MUST be set to 0 if manufacturer is not a member of the LA.
@@ -131,6 +124,16 @@ message Versions {
     string fpga_version = 5;
     string customizing = 6;
     string patch_level = 7;
+}
+
+// read only inventory description
+message Inventory {
+    uint32 nb_interfaces = 3;             //Number of WAN Interfaces
+    uint32 nb_radio_units = 4;            //Number of radio units of the GW
+    uint32 nb_antennas = 5;               //Number of LoRa Antennas
+    uint32 nb_CPUs = 6;                   //Number of CPUs for system performance
+    uint32 ram = 8;                       //size of RAM in MByte for memory usage
+    uint32 nb_file_systems = 9;           //File systems for usage statistics. 
 }
 
 message RegionOfOperation {
@@ -153,10 +156,22 @@ message RegionOfOperationResponse {
 }
 
 message RadioUnitCapabilities {}
+message RadioUnitConfig {}
+message RadioUnitResponse {}
+message RadioUnitEvent {}
 
 message AntennaCapabilities {}
+message AntennaConfig {}
+message AntennaResponse {}
 
-message DataRateTable {}
+message DataRateTableConfig {}
+message DataRateTableResponse {}
 
 message ChannelConfiguration {}
+message ChannelConfigResponse {}
+
+message FineTimeStampCapabilities {}
+message FineTimeStampConfig {}
+message FineTimeStampResponse {}
+message FineTimeStampEvent {}
 
