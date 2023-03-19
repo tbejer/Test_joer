@@ -34,13 +34,15 @@ message SingleObject {
         Versions versions = 12;
         Inventory inventory = 13;
 
-        RegionOfOperation region_of_operation = 21;
+        RegionOfOperationConfig region_of_operation = 21;
         RegionOfOperationResponse region_of_ops_response = 22;
 
         RadioUnitCapabilities radio_unit_capabilities = 31;
         RadioUnitConfig radio_unit_config = 32;
         RadioUnitResponse radio_unit_resp = 33;
         RadioUnitEvent radio_unit_event = 34;
+
+
 
     }
 }
@@ -136,7 +138,7 @@ message Inventory {
     uint32 nb_file_systems = 9;           //File systems for usage statistics. 
 }
 
-message RegionOfOperation {
+message RegionOfOperationConfig {
     uint32 region = 1;   
 }
 
@@ -145,7 +147,14 @@ message RegionOfOperationResponse {
 
     }
     message RegionOfOperationFailure {
+        enum RegionOfOperationError{
+            REG_OF_OPS_UNKNOWN_ERROR = 0;
+            REG_OF_OPS_NOT_SUPPORTED = 1;
+            REG_OF_OPS_UNKNOWN_REG = 2;
+        }
 
+        RegionOfOperationError error = 1;
+        
     }
 
     oneof region_of_operation_response {
