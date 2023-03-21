@@ -24,15 +24,17 @@ message SingleObject {
     oneof AllObjects {
 
         Empty empty = 1;
+        Success success = 2;
+        Failure failure = 3;
 
-        RegistrationRequest reg_request = 2;
-        RegistrationResponse reg_response = 3;
-        Uptime uptime = 4;
-        TimeInfo time_info = 5;
+        RegistrationRequest reg_request = 11;
+        RegistrationResponse reg_response = 12;
+        Uptime uptime = 13;
+        TimeInfo time_info = 14;
 
-        Equipment equipment = 11;
-        Versions versions = 12;
-        Inventory inventory = 13;
+        Equipment equipment = 15;
+        Versions versions = 16;
+        Inventory inventory = 17;
 
         RegionOfOperationConfig region_of_operation = 21;
         RegionOfOperationResponse region_of_ops_response = 22;
@@ -60,6 +62,8 @@ message SingleObject {
     }
 }
 
+
+// ***************************************** Standard Response opbjects ********************************
 
 // Empty message for indication No Error, used as response for read only value transmission
 // in a list or single objects. 
@@ -201,8 +205,20 @@ message RadioUnitCapabilities {
     bool fine_time_stamp = 6;    //true if the radio unit supports fine time stamping
 }
 message RadioUnitConfig {}
+
 message RadioUnitResponse {}
-message RadioUnitEvent {}
+
+message RadioUnitEvent {
+    enum RadioUnitState {
+        RU_UNKONWN = 0;          //Unkown state
+        RU_INIT    = 1;          //Radio unit get initialized
+        RU_RUNNING = 2;          //Radio unit has finished initialization and is up&running
+        RU_FAILED  = 3;          //Radio unit failed
+    }
+
+    uint32 id = 1;
+    RadioUnitState ru_state = 2;  
+}
 
 
 // ******************************************** Antenna messages *************************************
@@ -215,7 +231,7 @@ enum AntennaType {
 message AntennaCapabilities {
     uint32 id = 1;             //Identifier of the antenna
     uint32 radio_unit = 2;     //id of the radio unit this antenna is attached to
-    bool fix = 3;           //true if the antenna is fix installed and not changable 
+    bool fix = 3;              //true if the antenna is fix installed and not changable 
     string port_label = 4;     //external label of the antenna port
     uint32 max_gain = 5;       //max allowed antenna gain according the certification. This value MAY depend on the region of operation
     uint32 min_freq = 6;       //minimal frequency in Hz the antenna supports
@@ -223,24 +239,35 @@ message AntennaCapabilities {
 }
 
 message AntennaConfig {
-    bool active = 1;           //antenna MAY be active or inactive. 
-    uint32 ant_gain = 2;       //antenna gain in dB
-    uint32 insertion_loss = 3; //insertion loss in dB
-    AntennaType ant_type = 4;  //Antenna type
-    uint32 delay = 5;          //delay of signal in ns from antenna to gw, relevant for fine time stamps
+    uint32 id = 1;             //MANDATORY: ID of the antenna
+    bool active = 2;           //antenna MAY be active or inactive. 
+    uint32 ant_gain = 3;       //antenna gain in dB
+    uint32 insertion_loss = 4; //insertion loss in dB
+    AntennaType ant_type = 5;  //Antenna type
+    uint32 delay = 6;          //delay of signal in ns from antenna to gw, only relevant for fine time stamping
 }
-message AntennaResponse {}
+
+message AntennaResponse {
+    message AntennaResponseSuccess{}
+    message AntennaResponseFailure{}
+
+    oneof antenna_response {
+        AntennaResponseSuccess ant_success = 1;
+        AntennaResponseFailure ant_failure = 2;
+    }
+}
 
 
 // ******************************************** Data Rate Table messages *********************************
 
 message DataRateTableConfig {
-    uint32 id = 1;
-    string label = 2;
-    uint32 version = 3;
+    uint32 id = 1;             //id is defined by the NS. Identical DR Table configs on different GWs shall have the same ID.
+    string label = 2;          //label, defined by NS
+    uint32 version = 3;        //version of the DR Table and label. 
 
     repeated DataRateRow data_rates = 11;
 }
+
 message DataRateTableResponse {}
 
 message DataRateRow {
@@ -275,7 +302,7 @@ message DataRateRow {
 // ******************************************** Channel Configuration messages *********************************
 
 message ChannelConfiguration {
-    uint32 id = 1;
+    uint32 id = 1;             //id is defined by the NS. Identical ChannelConfigs on different GWs shall have the same ID.
     string label = 2;
     uint32 version = 3;
 
@@ -287,7 +314,7 @@ message RXChannel {
     uint32 id = 1;
     bool enabled = 2;
     uint32 antenna_id = 3;
-    uint32 frequecy = 4;        //frequency of channel in Hz.AntennaCapabilities
+    uint32 frequecy = 4;        //frequency of channel in Hz
     uint32 cp_id = 5;           //Channel plan ID 
     uint32 dr_low = 6;          //DR lower range limit for multi css channel definitions, or DR for single DR channels
     uint32 dr_high = 7;         //DR higher range limit for multi css channels only,
