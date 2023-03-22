@@ -39,11 +39,13 @@ message SingleObject {
         RegionOfOperationConfig region_of_operation = 21;
         RegionOfOperationResponse region_of_ops_response = 22;
 
+        RadioUnits radio_units = 30;
         RadioUnitCapabilities radio_unit_capabilities = 31;
         RadioUnitConfig radio_unit_config = 32;
         RadioUnitResponse radio_unit_resp = 33;
         RadioUnitEvent radio_unit_event = 34;
 
+        Antennas antennas = 40;
         AntennaCapabilities antenna_capabilities = 41;
         AntennaConfig antenna_config = 42;
         AntennaResponse antenna_response = 43;
@@ -63,14 +65,16 @@ message SingleObject {
 }
 
 
-// ***************************************** Standard Response opbjects ********************************
+// ***************************************** Generic Response opbjects ********************************
 
 // Empty message for indication No Error, used as response for read only value transmission
 // in a list or single objects. 
 message Empty {}
 
+//Empty Success message, indicating a success on the processing of an object, without containing additional information
 message Success {}
 
+//Generic Failure message, may be used to indicate an error in processing a object of the payload
 message Failure {
     uint32 code = 1;
     string reason = 2;
@@ -196,6 +200,13 @@ message RegionOfOperationResponse {
 
 // ******************************************** Radio Unit messages *********************************
 
+//RadioUnits MAY contain both, descritpion of the capabilities and configuration.
+message RadioUnits {
+    repeated RadioUnitCapabilities radio_units_capabilities = 1;
+    repeated RadioUnitConfig radio_units_config = 2;
+}
+
+//read only description of the radio unit capabilities.
 message RadioUnitCapabilities {
     uint32 id = 1;               //id of the radio unit
     uint32 nb_multi_css = 2;     //number of multi css channels supported
@@ -211,8 +222,8 @@ message RadioUnitResponse {}
 message RadioUnitEvent {
     enum RadioUnitState {
         RU_UNKONWN = 0;          //Unkown state
-        RU_INIT    = 1;          //Radio unit get initialized
-        RU_RUNNING = 2;          //Radio unit has finished initialization and is up&running
+        RU_INIT    = 1;          //Radio unit gets initialized
+        RU_RUNNING = 2;          //Radio unit has finished initialization and is functional
         RU_FAILED  = 3;          //Radio unit failed
     }
 
@@ -228,6 +239,19 @@ enum AntennaType {
     SECTOR = 1;
 }
 
+enum AntennaMode {
+    RX_TX = 0;                //Antenna will be used for receiving and sending messages
+    RX_ONLY = 1;              //Antenna will be used for receiving messages only 
+    RX_TX_OFF = 2;            //Antenna SHALL not be used
+}
+
+//Antennas MAY contain both, description of the capabilities and the configuration
+message Antennas {
+    repeated AntennaCapabilities antennas_capabilities = 1;
+    repeated AntennaConfig antennas_configs= 2;
+}
+
+//read-only capabilities of the antenna
 message AntennaCapabilities {
     uint32 id = 1;             //Identifier of the antenna
     uint32 radio_unit = 2;     //id of the radio unit this antenna is attached to
@@ -238,13 +262,17 @@ message AntennaCapabilities {
     uint32 max_freq = 7;       //maximal frequency in Hz th antenna supports
 }
 
+//configuration of the antenna
+//fields up to id 6 are used to represent the installation
+//fields 11 and higher are used to configure operations mode. 
 message AntennaConfig {
-    uint32 id = 1;             //MANDATORY: ID of the antenna
-    bool active = 2;           //antenna MAY be active or inactive. 
+    uint32 id = 1;             //MANDATORY: ID of the antenna, cannot be overwriten
+    bool present = 2;          //indicate if antenna is present or not installed
     uint32 ant_gain = 3;       //antenna gain in dB
     uint32 insertion_loss = 4; //insertion loss in dB
     AntennaType ant_type = 5;  //Antenna type
     uint32 delay = 6;          //delay of signal in ns from antenna to gw, only relevant for fine time stamping
+    AntennaMode ant_mode = 11; //mode of usage
 }
 
 message AntennaResponse {
@@ -276,7 +304,7 @@ message DataRateRow {
         uint32 bw = 2;         //bandwidth in kHz
     }
     message FSKRow {
-        uint32 kbps = 1;      //Capacity in kbps
+        uint32 kbps = 1;       //Capacity in kbps
     }
     message LRFHSSRow {
         enum CR {
