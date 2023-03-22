@@ -1,0 +1,14 @@
+openapi: 3.0.0
+info: 
+  description: LoRaWAN NS-GW_Interface, GW Interface
+  version: 0.0.7
+  title: LoRaWAN GW Interface
+
+servers:
+# Placeholder for actual GW Interface
+- url: 'https://virtualserver.swaggerhub.com/tbejer/LorawanGw/0.0.7'
+
+paths:
+  /c:
+    put:
+      description: gw configuration put messages from ns.
