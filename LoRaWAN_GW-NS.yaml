@@ -10,5 +10,42 @@ servers:
 
 paths:
   /c:
+    get:
+      description: |
+        Retrieve ObjectIndex or specific list of objects from a device
+      parameters:
+      - $ref: '#/components/parameters/qOption'
+      responses:
+        '205':
+          description: |
+            Successful return of requested Objects or ObjectIndex etc...
+          content:
+            application/octet-stream:
+              schema:
+                oneOf:
+                - $ref: 'https://api.swaggerhub.com/domains/tbejer/etc'
+                - $ref: 'https://api.swaggerhub.com/domains/tbejer/etc'
+        '400':
+          description: Bad Request.
+        '401':
+          description: Unauthorized.
+        '402':
+          descritpion: Bad Option.
+        '403':
+          description: Object not found, response won't fit in MTU.
     put:
       description: gw configuration put messages from ns.
+      requestBody:
+        required: true
+        content:
+          application/octet-stream:
+            schema:
+              $ref:'https://api.swaggerhub.com/domains/tbejer.etc'
+      responses:
+        '202':
+          description: Objects have been updated.
+        '400':
+          description: Bad Request.
+
+  /c/{ObjectIdPath}:
+    get:
