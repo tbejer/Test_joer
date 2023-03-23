@@ -30,7 +30,7 @@ paths:
         '401':
           description: Unauthorized.
         '402':
-          descritpion: Bad Option.
+          description: Bad Option.
         '403':
           description: Object not found, response won't fit in MTU.
     put:
@@ -47,5 +47,26 @@ paths:
         '400':
           description: Bad Request.
 
-  /c/{ObjectIdPath}:
+  /c/{objectIdPath}:
     get:
+      description: | 
+        Retrieve objects from GW.
+      parameters:
+      - $ref: '#/components/parameters/objectIdPath'
+      - $ref: '#/components/parameters/fOption'
+
+#
+# Query parameters used for gateway requests
+#
+components:
+  parameters:
+    fOption:
+      description: |
+        F option for request to device will retrieve full table content, while leaving the
+        F option will only retrieve the table ID, label and version
+      in: query
+      name: f
+      required: false
+      schema:
+        type: boolean
+        description: default is false.
