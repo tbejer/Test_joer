@@ -1,8 +1,8 @@
 openapi: 3.0.0
-info: 
-  description: LoRaWAN NS-GW_Interface, GW Interface
+info:
   version: 0.0.7
   title: LoRaWAN GW Interface
+  description: LoRaWAN NS-GW_Interface, GW Interface
 
 servers:
 # Placeholder for actual GW Interface
@@ -54,12 +54,24 @@ paths:
       parameters:
       - $ref: '#/components/parameters/objectIdPath'
       - $ref: '#/components/parameters/fOption'
+      responses:
+        '200':
+          description: Success
 
 #
 # Query parameters used for gateway requests
 #
 components:
   parameters:
+    qOption:
+      description: |
+        todo
+      in: query
+      name: q
+      required: false
+      schema:
+        type: object
+        description: list of requested objects
     fOption:
       description: |
         F option for request to device will retrieve full table content, while leaving the
@@ -70,3 +82,11 @@ components:
       schema:
         type: boolean
         description: default is false.
+        
+    objectIdPath:
+      description: Path param specifying TLV ID.
+      in: path
+      name: objectIdPath
+      required: true 
+      schema:
+        type: integer
