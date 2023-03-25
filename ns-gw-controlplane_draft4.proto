@@ -23,9 +23,8 @@ message Payload {
 message SingleObject {
     oneof AllObjects {
 
-        Empty empty = 1;
-        Success success = 2;
-        Failure failure = 3;
+        Success success = 1;
+        Failure failure = 2;
 
         RegistrationRequest reg_request = 11;
         RegistrationResponse reg_response = 12;
@@ -66,10 +65,8 @@ message SingleObject {
 
 
 // ***************************************** Generic Response opbjects ********************************
-
-// Empty message for indication No Error, used as response for read only value transmission
-// in a list or single objects. 
-message Empty {}
+// generic messages MAY be used in the response message after processing a list of objects, if
+// for each object in the request there shall be one object in the response. 
 
 //Empty Success message, indicating a success on the processing of an object, without containing additional information
 message Success {}
@@ -87,6 +84,14 @@ enum GwType {
     GW_TYPE_A = 0;  // Type A are GWs which can distribute their capabilities to one or multiple antennas.
 }
 
+enum GwState {
+    GW_STATE_UNKNOWN = 0;
+    GW_COMMISIONED = 1;
+    GW_REGIONALIZED = 2;
+    GW_INITIALIZED = 3;
+}
+
+
 message RegistrationRequest {
   //mandatory: Extended Unique Identifier (EUI-64) of the gateway. Each gateway SHALL have an assigned gw_eui.
   //The gw_eui is a globally unique gateway identifier in the IEEE EUI64 address space, managed by the OUI holder of the EUI. 
@@ -103,7 +108,8 @@ message RegistrationRequest {
 
 message RegistrationResponse {
     message RegistrationSuccess{
-        fixed32  gw_addr = 1;
+        fixed32 gw_addr = 1;
+        GwState gw_state = 2;           //gateway state after successfull registration
     }
     
     message RegistrationFailure {
@@ -116,7 +122,7 @@ message RegistrationResponse {
         }
 
         RegistrationError error = 1;
-        google.protobuf.Duration idle_time=2;
+        google.protobuf.Duration idle_time=2;             //idle time the GW SHALL wait until re-trying the next registration request. 
     }
 
     oneof registration_response {
@@ -172,14 +178,14 @@ message Inventory {
 // ******************************************** Region of Operation messages *********************************
 
 //Region of Opertation limits the radio restrictions according the regulator of the specified
-//region. 
+//region. The region of operation configuration MAY change the state of the GW. 
 message RegionOfOperationConfig {
     uint32 region = 1;                    //Region of Operation, according ISO ???
 }
 
 message RegionOfOperationResponse {
     message RegionOfOperationSuccess {
-
+        gwState gw_state = 1;             //GW state after processing the region of operation configuration.
     }
     message RegionOfOperationFailure {
         enum RegionOfOperationError{
@@ -282,6 +288,7 @@ message AntennaConfig {
     AntennaMode ant_mode = 11; //mode of usage
 }
 
+//Response to an antenna config request.
 message AntennaResponse {
     message AntennaResponseSuccess{
     }
@@ -289,10 +296,13 @@ message AntennaResponse {
         enum AntennaError{
             ANT_UNKNOWN_ERROR = 0;
             ANT_ID_UNKNOWN = 1;      //ID of antenna is not known on GW
-            ANT_NOT_PRESENT = 2;     //Ant may not be configured, if not present
-            ANT_GAIN_EXCEED = 3;     //Gain exceeds certified max gain 
-            ANT_MODE_ERROR = 4;      //Ant mode is not supported or unknown 
+            ANT_NOT_PRESENT = 2;     //atnenna to be configured is not present
+            ANT_GAIN_EXCEED = 3;     //requested gain exceeds certified max gain 
+            ANT_MODE_ERROR = 4;      //requested antenna mode is not supported or unknown 
         }
+
+        AntennaError ant_error = 1;
+        uint32 ant_id = 2;           //ID of Antenna whose config caused an error.  
     }
 
     oneof antenna_response {
@@ -304,6 +314,8 @@ message AntennaResponse {
 
 // ******************************************** Data Rate Table messages *********************************
 
+//the GW has one table for data rate configurations. The table may hold datarate definitions of multiple channel plans, therfore
+//the cp_id, representing the channel plan id (according RP-002, chapter 2) is added the DR table row.  
 message DataRateTableConfig {
     uint32 id = 1;             //id is defined by the NS. Identical DR Table configs on different GWs shall have the same ID.
     string label = 2;          //label, defined by NS
@@ -312,8 +324,10 @@ message DataRateTableConfig {
     repeated DataRateRow data_rates = 11;
 }
 
+//to be worked on
 message DataRateTableResponse {}
 
+//a data rate table row specifies one datarate.
 message DataRateRow {
     message LoRaRow {
         uint32 sf = 1;         //Spreading Factor [7..12]
@@ -332,9 +346,10 @@ message DataRateRow {
         uint32 bw = 2;          //bandwidth in kHz
     }
 
-    uint32 cp_id = 1;           //Channel plan ID according RP-002
-    uint32 dr = 2;              //Data rate according RP-002
-    bool uplink = 3;            //true if this DR Row is used for uplinks
+    uint32 id = 1;              //row ID, for data management only
+    uint32 cp_id = 2;           //Channel plan ID according RP-002
+    uint32 dr = 3;              //Data rate according RP-002
+    bool uplink = 4;            //true if this DR Row is used for uplinks
     oneof dr_row {
         LoRaRow lora_dr = 11;
         FSKRow  fsk_dr  = 12;
@@ -386,7 +401,7 @@ message ChannelConfigResponse {
 
 }
 
-//single RXChannel definition. Single channels are not configured induvidualy. 
+//single RXChannel definition. Single channels are not configured individualy. 
 message RXChannel {
     uint32 id = 1;
     bool enabled = 2;
@@ -399,7 +414,7 @@ message RXChannel {
 
 
 // ******************************************** Fine Timestamping messages ****************************************
-
+// to be worked out
 message FineTimeStampCapabilities {}
 message FineTimeStampConfig {}
 message FineTimeStampResponse {}
