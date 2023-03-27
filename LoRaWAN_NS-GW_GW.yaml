@@ -1,0 +1,118 @@
+# https://app.swaggerhub.com/apis/JOACHIMERNST61_1/ns_gw_gw/0.0.7
+openapi: 3.0.0
+info:
+  version: 0.0.7
+  title: LoRaWAN GW Interface
+  description: LoRaWAN NS-GW_Interface, GW Interface
+
+servers:
+- url: 'https://api.swaggerhub.com/apis/JOACHIMERNST61/ns_gw_gw/0.0.7'
+
+paths:
+  /c:
+    put:
+      description: Configuration updates from NS to GW.
+      requestBody:
+        description: |
+          list of objects to be updated. If the object is not present, it SHALL be created. 
+          the list SHALL be processed in the order of the objects in the list.
+          If an error occurs during the processing of an obeject, the processing is aborted.
+        required: true
+        content:
+          application/octet-stream:
+            schema:
+              $ref: 'https://app.swaggerhub.com/apis/JOACHIMERNST61_1/LoRaNSGW_Commons/0.0.7#/components/schemas/ObjectsPutableToDevice'
+      responses:
+        '202':
+          description: Objects have been updated.
+        '400':
+          description: Bad Request.
+
+    get:
+      description: |
+        Retrieve ObjectIndex or specific list of objects from a device
+      parameters:
+      - $ref: '#/components/parameters/qOption'
+      - $ref: '#/components/parameters/fOption'
+      responses:
+        '205':
+          description: |
+            Successful return of requested Objects or ObjectIndex etc...
+          content:
+            application/octet-stream:
+              schema:
+                oneOf:
+                - $ref: 'https://app.swaggerhub.com/apis/JOACHIMERNST61_1/LoRaNSGW_Commons/0.0.7#/components/schemas/ObjectsGetAbleFromGW'
+                - $ref: 'https://app.swaggerhub.com/apis/JOACHIMERNST61_1/LoRaNSGW_Commons/0.0.7#/components/schemas/ObjectIndex'
+        '400':
+          description: Bad Request.
+        '401':
+          description: Unauthorized.
+        '402':
+          description: Bad Option.
+        '403':
+          description: Object not found, response won't fit in MTU.
+
+  /c/{objectIdPath}:
+    get:
+      description: | 
+        Retrieve single objects from GW.
+      parameters:
+      - $ref: '#/components/parameters/objectIdPath'
+      - $ref: '#/components/parameters/fOption'
+      responses:
+        '205':
+          description: Return the requested TLV.  Full table retreival is allowed.
+          content:
+            application/octet-stream:
+              schema:
+                $ref: 'https://api.swaggerhub.com/domains/tbejer/LoRaNSGWComponents/1.0#/components/schemas/ObjectsGETFromDevice'
+        '400':
+          description: Bad Request.
+        '401':
+          description: Unauthorized.
+        '402':
+          description: Bad option.
+        '403':                
+          description: TLV not found, response won't fit in MTU.          
+        '404':
+          description: Not found.          
+        '405':
+          description: Method not allowed.          
+
+
+#
+# Query parameters used for gateway requests
+#
+components:
+  parameters:
+    qOption:
+      description: |
+        q option is a list of object ID which should be retrieved.
+        If the q option is not set, the GW will return the list of object IDs it supports. 
+      in: query
+      name: q
+      required: false
+      schema:
+        type: object
+        description: |
+          list of requested objectIDs
+    fOption:
+      description: |
+        If the f option (f for full_table) is set to true on requests from NS to GW, the GW will retrieve full table content, 
+        while leaving the F option or setting it to FALSE will only retrieve the table ID, label and version
+      in: query
+      name: f
+      required: false
+      schema:
+        type: boolean
+        description: default is false.
+        
+    objectIdPath:
+      description: Path param specifying Obj
+      in: path
+      name: objectIdPath
+      required: true
+      schema: 
+        type: integer
+        
