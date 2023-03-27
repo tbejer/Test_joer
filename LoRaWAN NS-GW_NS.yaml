@@ -1,0 +1,154 @@
+# https://app.swaggerhub.com/apis/JOACHIMERNST61_1/ns_gw_ns/0.0.7
+openapi: 3.0.0
+info:
+  version: 0.0.7
+  title: LoRaWAN NSGW_NS
+  description: LoRaWAN NS-GW_Interface, NS Interfacce
+
+servers:
+# Added by API Auto Mocking Plugin
+- description: SwaggerHub API Auto Mocking
+  url: https://virtserver.swaggerhub.com/JOACHIMERNST61_1/ns_gw_ns/0.0.7
+
+
+paths:
+  /r:
+    put:
+      description: |
+        registration of GW at NS. 
+      requestBody:
+        required: true
+        content:
+            application/octet-stream:
+              schema:
+                $ref: 'https://app.swaggerhub.com/apis/JOACHIMERNST61_1/LoRaNSGW_Commons/0.0.7#/components/schemas/ObjectsPutableToNSRegisration'
+      responses:
+        '202':
+          description: Successfull Registration of the GW
+          content:
+            application/octet-stream:
+              schema:
+                $ref: 'https://app.swaggerhub.com/apis/JOACHIMERNST61_1/LoRaNSGW_Commons/0.0.7#/components/schemas/ObjectsResponsAbleToNSRegisration'
+        '400':
+          description: Bad request
+          
+  /{gwEui}/r/{gwIdentityPath}:
+    delete:
+      description: |
+        De-registration initiated by GW at NS.
+      responses:
+        '202':
+          description: De-Registration at gw successfull, GW in commissioned state
+          content:
+            application/octet-stream:
+              schema:
+                $ref: 'https://app.swaggerhub.com/apis/JOACHIMERNST61_1/LoRaNSGW_Commons/0.0.7#/components/schemas/GwIdentityResponse'
+        '400':
+          description: De-Regionalization at GW failed.
+          
+  /{gwEui}/c:
+    get:
+      description: any configuration data the GW may requested at the NS.
+      responses:
+        '200':
+          description: success
+          content:
+            application/octet-stream:
+              schema:
+                $ref: 'https://app.swaggerhub.com/apis/JOACHIMERNST61_1/LoRaNSGW_Commons/0.0.7#/components/schemas/ObjectsGetableAtNs'
+        '400':
+          description: any failure, no content
+    put:
+        description: any configuration data the GW pushes to the NS
+        requestBody:
+          required: true
+          content:
+            application/octet-stream:
+              schema:
+                $ref: 'https://app.swaggerhub.com/apis/JOACHIMERNST61_1/LoRaNSGW_Commons/0.0.7#/components/schemas/ObjectsPutAbleToNSRegisration'
+        responses:
+          '202':
+            description: success
+            content:
+              application/octet-stream:
+                schema:
+                  $ref: 'https://app.swaggerhub.com/apis/JOACHIMERNST61_1/LoRaNSGW_Commons/0.0.7#/components/schemas/ObjectsResponsAbleToNSConfiguration'
+          '400':
+            description: error case
+            content:
+              application/octet-stream:
+                schema:
+                  $ref: 'https://app.swaggerhub.com/apis/JOACHIMERNST61_1/LoRaNSGW_Commons/0.0.7#/components/schemas/ObjectsResponsAbleToNSConfiguration'
+
+  /{gwEui}/s:
+    description: periodic statistic and status data
+    post:
+      description: periodic statistic and status data
+      requestBody:
+        required: true
+        content:
+          application/octet-stream:
+            schema:
+              $ref: 'https://app.swaggerhub.com/apis/JOACHIMERNST61_1/LoRaNSGW_Commons/0.0.7#/components/schemas/ObjectsPutAbleToNSRegisration'
+      responses:
+        '202':
+          description: success
+          content:
+            application/octet-stream:
+              schema:
+                $ref: 'https://app.swaggerhub.com/apis/JOACHIMERNST61_1/LoRaNSGW_Commons/0.0.7#/components/schemas/ObjectsResponsAbleToNSConfiguration'
+        '400':
+          description: error case
+          content:
+            application/octet-stream:
+              schema:
+                $ref: 'https://app.swaggerhub.com/apis/JOACHIMERNST61_1/LoRaNSGW_Commons/0.0.7#/components/schemas/ObjectsResponsAbleToNSConfiguration'      
+
+  /{gwEui}/a:
+    description: any aynchronous events, state changes, and alarms
+    post:
+      description: any configuration data the GW pushes to the NS
+      requestBody:
+        required: true
+        content:
+          application/octet-stream:
+            schema:
+              $ref: 'https://app.swaggerhub.com/apis/JOACHIMERNST61_1/LoRaNSGW_Commons/0.0.7#/components/schemas/ObjectsPutAbleToNSRegisration'
+      responses:
+        '202':
+          description: success
+          content:
+            application/octet-stream:
+              schema:
+                $ref: 'https://app.swaggerhub.com/apis/JOACHIMERNST61_1/LoRaNSGW_Commons/0.0.7#/components/schemas/ObjectsResponsAbleToNSConfiguration'
+        '400':
+          description: error case
+          content:
+            application/octet-stream:
+              schema:
+                $ref: 'https://app.swaggerhub.com/apis/JOACHIMERNST61_1/LoRaNSGW_Commons/0.0.7#/components/schemas/ObjectsResponsAbleToNSConfiguration'
+                
+components:
+  parameters:
+    objectIdPath:
+      description: Path param specifying Obj
+      in: path
+      name: objectIdPath
+      required: true
+      schema: 
+        type: integer
+    gwIndentityPath:
+      description: Path parameter for gw_identity, as defined in proto file
+      in: path
+      name: gwIdentityPath
+      required: true
+      schema:
+        type: integer
+    gwEui:
+      description: todo
+      in: path
+      name: gwEUI 
+      required: true
+      schema:
+        type: integer
+        
