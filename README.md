@@ -1,3 +1,5 @@
 # Test_joer
-This is a learn and test repository.
-Nothing real here!
+The LoRa WAN NS-GW interface is defined in:
+-- *.proto for defining objects to be exchanged
+-- *.yaml for describing the OpenAPI interfaces at NS and GW side, assuming CoAP will be used, which supports 
+   the basic verbs "GET, POST, PUT, DELETE"
