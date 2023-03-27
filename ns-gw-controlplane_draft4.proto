@@ -91,43 +91,76 @@ enum GwState {
     GW_INITIALIZED = 3;
 }
 
+message GwIdentity {
 
-message RegistrationRequest {
   //mandatory: Extended Unique Identifier (EUI-64) of the gateway. Each gateway SHALL have an assigned gw_eui.
   //The gw_eui is a globally unique gateway identifier in the IEEE EUI64 address space, managed by the OUI holder of the EUI. 
   fixed64 gw_eui = 1;
-  
-  // optional: if not defined, GW_TYPE_A is considered
-  GwType gw_type = 2;
-  
-  //mandatory: Version and subversion of the NS-GW interface that are suppored by the GW.
-  int32 version = 3;
-  int32 sub_version = 4;  //for experimental versions, a negativ subversion number SHALL be used. 
 
 }
 
-message RegistrationResponse {
-    message RegistrationSuccess{
+message GwIdentityResponse {
+    message GwIdentitiySuccess{
         fixed32 gw_addr = 1;
         GwState gw_state = 2;           //gateway state after successfull registration
     }
     
-    message RegistrationFailure {
-        enum RegistrationError {
-            UNKNOWN_REG_ERROR = 0;
-            GW_NOT_KNOWN = 1;
-            GW_NOT_ALLOWED = 2;
-            GW_TYPE_NOT_SUPPORTED = 3;
-            VERSION_NOT_SUPPORTED = 4;
+    message GwIdentityFailure {
+        enum GwIdentityError {
+            GW_ID_UNKNOWN = 0;
+            GW_ID_NOT_KNOWN = 1;
+            GW_ID_NOT_ALLOWED = 2;
         }
 
-        RegistrationError error = 1;
+        GwIdentityError error = 1;
         google.protobuf.Duration idle_time=2;             //idle time the GW SHALL wait until re-trying the next registration request. 
     }
 
+    oneof gw_identity_response {
+        GwIdentitySuccess gw_identity_success = 1;
+        GwIdentityFailure gw_identity_failure = 2;
+    }
+
+}
+
+message GwProfile {
+  
+  // optional: if not defined, GW_TYPE_A is considered
+  GwType gw_type = 1;
+
+  //mandatory: Version and subversion of the NS-GW interface that are suppored by the GW.
+  int32 version = 2;
+  int32 sub_version = 3;           //for experimental versions, a negativ subversion number SHALL be used. 
+
+  uint32 gw_manufacturer = 11;     //LoRa Alliance vendor ID. MUST be set to 0 if manufacturer is not a member of the LA.
+  string gw_model = 12;            //Gateway Model as defined by the manufacturer
+  string serial_number = 13;       //Serial Number as assigned by the manufacturer
+  string hw_revision = 14;         //GW hardware revision, assigned by the manufacturer 
+
+
+}
+
+message GwProfileResponse {
+    message GwProfileSuccess{
+    }
+    
+    message GwProfileFailure {
+        enum GwProfileError {
+            GW_PROF_UNKNOWN_ERROR = 0;
+            GW_PROF_TYPE_NOT_SUPPORTED = 3;
+            GW_PROF_VERSION_NOT_SUPPORTED = 4;
+        }
+
+        GwProfileError error = 1;
+
+        //NS proposed version and supversion of interface as fall back
+        int32 version = 2;
+        int32 sub_version = 3;           //for experimental versions, a negativ subversion number SHALL be used.       
+    }
+
     oneof registration_response {
-        RegistrationSuccess registration_success = 1;
-        RegistrationFailure registration_failure = 2;
+        GwProfileSuccess gw_profile_success = 1;
+        GwProfileFailure gw_profile_failure = 2;
     }
 
 }
@@ -146,14 +179,7 @@ message TimeInfo {
     uint32 leap_seconds = 2;
 }
 
-// read only equipment description 
-message Equipment{
-    uint32 gw_manufacturer = 1;            //LoRa Alliance vendor ID. MUST be set to 0 if manufacturer is not a member of the LA.
-    string gw_model = 2;                   //Gateway Model as defined by the manufacturer
-    string serial_number = 3;              //Serial Number as assigned by the manufacturer
-    string hw_revision = 4;                //GW hardware revision, assigned by the manufacturer 
-}
-
+// read only hw and sw versions
 message Versions {
     string os_version = 1;
     string fw_version = 2;
@@ -310,7 +336,6 @@ message AntennaResponse {
         AntennaResponseFailure ant_failure = 2;
     }
 }
-
 
 // ******************************************** Data Rate Table messages *********************************
 
