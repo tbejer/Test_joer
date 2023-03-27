@@ -26,14 +26,16 @@ message SingleObject {
         Success success = 1;
         Failure failure = 2;
 
-        RegistrationRequest reg_request = 11;
-        RegistrationResponse reg_response = 12;
-        Uptime uptime = 13;
-        TimeInfo time_info = 14;
+        GwIdentity gw_identity = 11;
+        GwIdentityResponse gw_identity_response = 12;
+        GwProfile gw_profile = 13;
+        GwProfileResponse gw_profile_response = 14;
 
-        Equipment equipment = 15;
-        Versions versions = 16;
-        Inventory inventory = 17;
+        Uptime uptime = 15;
+        TimeInfo time_info = 16;
+
+        Versions versions = 17;
+        Inventory inventory = 18;
 
         RegionOfOperationConfig region_of_operation = 21;
         RegionOfOperationResponse region_of_ops_response = 22;
@@ -91,6 +93,11 @@ enum GwState {
     GW_INITIALIZED = 3;
 }
 
+//For GW registration the GwIdentity object is send in PUT request to the NS. 
+//GW registration is started after a successfull WSS session is established between NS and GW.
+//For GW de-registration the GwIdentity object is sent in a DELETE request to the NS.
+//In any case the GW will responde with a GWResponse message. 
+
 message GwIdentity {
 
   //mandatory: Extended Unique Identifier (EUI-64) of the gateway. Each gateway SHALL have an assigned gw_eui.
@@ -102,12 +109,11 @@ message GwIdentity {
 message GwIdentityResponse {
     message GwIdentitiySuccess{
         fixed32 gw_addr = 1;
-        GwState gw_state = 2;           //gateway state after successfull registration
     }
     
     message GwIdentityFailure {
         enum GwIdentityError {
-            GW_ID_UNKNOWN = 0;
+            GW_ID_UNKNOWN_ERROR = 0;
             GW_ID_NOT_KNOWN = 1;
             GW_ID_NOT_ALLOWED = 2;
         }
@@ -121,8 +127,12 @@ message GwIdentityResponse {
         GwIdentityFailure gw_identity_failure = 2;
     }
 
+    GwState gw_state = 3;          //GW state after processing the GW Identity Object
+
 }
 
+// GwProfile is sent to the NS during a registration request as a mandatory object. 
+// The NS needs to support that gw_type and the version and subversion of the NS-GW interface.
 message GwProfile {
   
   // optional: if not defined, GW_TYPE_A is considered
@@ -137,9 +147,11 @@ message GwProfile {
   string serial_number = 13;       //Serial Number as assigned by the manufacturer
   string hw_revision = 14;         //GW hardware revision, assigned by the manufacturer 
 
-
 }
 
+//Response from the NS to the GW to a GwProfile object sent.
+//Note: if the GW-Type is not supported at NS, any configuration of the Radio Unit and Antennas MAY fail. 
+//      if the interface version is not supported, a lower version MAY be proposed by NS to GW. 
 message GwProfileResponse {
     message GwProfileSuccess{
     }
@@ -206,9 +218,11 @@ message Inventory {
 //Region of Opertation limits the radio restrictions according the regulator of the specified
 //region. The region of operation configuration MAY change the state of the GW. 
 message RegionOfOperationConfig {
-    uint32 region = 1;                    //Region of Operation, according ISO ???
+    uint32 region = 1;                    //Region of Operation, according ISO-3166
 }
 
+//After the region of operation is set, the GW is in Regionalized state. Regulatory rules shall apply immediately on the GW like:
+//Allowed frequency ranges, max conducted or emmited power, duty cycle limitations, and dwell time limitations. 
 message RegionOfOperationResponse {
     message RegionOfOperationSuccess {
         gwState gw_state = 1;             //GW state after processing the region of operation configuration.
