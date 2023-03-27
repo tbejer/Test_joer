@@ -1,6 +1,6 @@
-# Test_joer
-# H2 *Draft*
-# H1 LoRaWAN NS-GW Interface
+Test_joer
+## *Draft*
+# LoRaWAN NS-GW Interface
 
 The LoRa WAN NS-GW interface is defined in:
 
