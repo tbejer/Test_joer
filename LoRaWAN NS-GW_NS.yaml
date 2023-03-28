@@ -17,18 +17,25 @@ paths:
       description: |
         registration of GW at NS. 
       requestBody:
+        description: |
+          Request body MUST contain the objects GwIdentity, GwProfile, and Uptime.
         required: true
         content:
             application/octet-stream:
               schema:
-                $ref: 'https://app.swaggerhub.com/apis/JOACHIMERNST61_1/LoRaNSGW_Commons/0.0.7#/components/schemas/ObjectsPutableToNSRegisration'
+#                $ref: 'https://app.swaggerhub.com/apis/JOACHIMERNST61_1/LoRaNSGW_Commons/0.0.7#/components/schemas/ObjectsPutableToNSRegisration'
+                $ref: '#/components/schemas/ObjectsPutableToNSRegisration'
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/ObjectsPutableToNSRegistration_json'
       responses:
         '202':
           description: Successfull Registration of the GW
           content:
             application/octet-stream:
               schema:
-                $ref: 'https://app.swaggerhub.com/apis/JOACHIMERNST61_1/LoRaNSGW_Commons/0.0.7#/components/schemas/ObjectsResponsAbleToNSRegisration'
+#                $ref: 'https://app.swaggerhub.com/apis/JOACHIMERNST61_1/LoRaNSGW_Commons/0.0.7#/components/schemas/ObjectsResponsAbleToNSRegisration'
+                $ref: '#/components/schemas/ObjectsResponsableToNSRegisration'
         '400':
           description: Bad request
           
@@ -42,9 +49,10 @@ paths:
           content:
             application/octet-stream:
               schema:
-                $ref: 'https://app.swaggerhub.com/apis/JOACHIMERNST61_1/LoRaNSGW_Commons/0.0.7#/components/schemas/GwIdentityResponse'
+#                $ref: 'https://app.swaggerhub.com/apis/JOACHIMERNST61_1/LoRaNSGW_Commons/0.0.7#/components/schemas/GwIdentityResponse'
+                $ref: '#/components/schemas/GwIdentityResponse'
         '400':
-          description: De-Regionalization at GW failed.
+          description: De-Registrering at GW failed.
           
   /{gwEui}/c:
     get:
@@ -144,11 +152,77 @@ components:
       required: true
       schema:
         type: integer
+    gwRegionalizationPath:
+      description: Path parametr for Regionalization
+      in: path
+      name: gwRegionalizationPath
+      required: true
+      schema:
+        type: integer
     gwEui:
       description: todo
-      in: path
       name: gwEUI 
+      in: path
       required: true
       schema:
         type: integer
         
+  schemas:
+    ObjectsPutableToNSRegisration:
+      description: objects supported in PUT request from GW to NS.
+      anyOf:
+        - $ref: '#/components/schemas/GwIdentity'
+        - $ref: '#/components/schemas/GwProfile'
+        - $ref: '#/components/schemas/Uptime'
+        - $ref: '#/components/schemas/Inventory'
+        - $ref: '#/components/schemas/Versions'
+        - $ref: '#/components/schemas/RadioUnitCapabilities'
+        - $ref: '#/components/schemas/AntennaCapabilities'
+    ObjectsPutableToNSRegistration_json:
+      description: |
+        JSON is for documentation purposes only, do not use in implementation.
+        Use objects as defined in "ObjectsPutableToNSRegistration" instead.
+      type: array
+      items: 
+        type: string
+        enum: 
+         - GwIdentity
+         - GwProfile
+         - Uptime
+         - Inventory
+         - Versions
+         - RadioUnitCapabilities
+         - AntennaCapabilities
+    ObjectsResponsableToNSRegisration:
+      description: objects supported in PUT Response from NS to GW.
+      anyOf:
+        - $ref: '#/components/schemas/GwIdentityResponse'
+        - $ref: '#/components/schemas/GwProfileResponse'
+        - $ref: '#/components/schemas/TimeInfo'
+        - $ref: '#/components/schemas/Success'
+        - $ref: '#/components/schemas/Failure'
+  
+    Success:
+      type: object
+    Failure:
+      type: object
+    GwIdentity:
+      type: object
+    GwIdentityResponse:
+      type: object
+    GwProfile:
+      type: object
+    GwProfileResponse:
+      type: object
+    Uptime:
+      type: object
+    TimeInfo:
+      type: object
+    Inventory:
+      type: object
+    Versions:
+      type: object
+    RadioUnitCapabilities:
+      type: object
+    AntennaCapabilities:
+      type: object
