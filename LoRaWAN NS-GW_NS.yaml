@@ -18,52 +18,62 @@ paths:
         registration of GW at NS. 
       requestBody:
         description: |
-          Request body MUST contain the objects GwIdentity, GwProfile, and Uptime.
+          Request body MUST contain the objects GwIdentity, GwProfile, and Uptime. 
+          Regisration request is sent after successfull set up of as WSS connection from GW to NS.
+          Depending on GW state, the NS MAY use different strategies to learn capabilities and
+          allign configurations. 
         required: true
         content:
             application/octet-stream:
               schema:
-#                $ref: 'https://app.swaggerhub.com/apis/JOACHIMERNST61_1/LoRaNSGW_Commons/0.0.7#/components/schemas/ObjectsPutableToNSRegisration'
-                $ref: '#/components/schemas/ObjectsPutableToNSRegisration'
+                $ref: '#/components/schemas/ObjectsPutableToNsRegistration'
             application/json:
               schema: 
-                $ref: '#/components/schemas/ObjectsPutableToNSRegistration_json'
+                $ref: '#/components/schemas/ObjectsPutableToNsRegistration'
       responses:
         '202':
           description: Successfull Registration of the GW
           content:
             application/octet-stream:
               schema:
-#                $ref: 'https://app.swaggerhub.com/apis/JOACHIMERNST61_1/LoRaNSGW_Commons/0.0.7#/components/schemas/ObjectsResponsAbleToNSRegisration'
-                $ref: '#/components/schemas/ObjectsResponsableToNSRegisration'
+                $ref: '#/components/schemas/ObjectsResponseableToPutToNsRegistration'
         '400':
           description: Bad request
           
-  /{gwEui}/r/{gwIdentityPath}:
+  /{gwEui}/d:
     delete:
       description: |
         De-registration initiated by GW at NS.
+        No query parameters and no requestBody are used for this request.
+      parameters:
+        - $ref: '#/components/parameters/gwEui'
       responses:
         '202':
           description: De-Registration at gw successfull, GW in commissioned state
           content:
             application/octet-stream:
               schema:
-#                $ref: 'https://app.swaggerhub.com/apis/JOACHIMERNST61_1/LoRaNSGW_Commons/0.0.7#/components/schemas/GwIdentityResponse'
                 $ref: '#/components/schemas/GwIdentityResponse'
         '400':
           description: De-Registrering at GW failed.
-          
+
   /{gwEui}/c:
+    parameters:
+    - $ref: '#/components/parameters/gwEui'
     get:
-      description: any configuration data the GW may requested at the NS.
+      description: any configuration data the GW may requested at the NS
+      parameters:
+        - $ref: '#/components/parameters/qParameter'
       responses:
         '200':
-          description: success
+          description: success, to do details later
           content:
             application/octet-stream:
               schema:
-                $ref: 'https://app.swaggerhub.com/apis/JOACHIMERNST61_1/LoRaNSGW_Commons/0.0.7#/components/schemas/ObjectsGetableAtNs'
+                $ref: '#/components/schemas/ObjectsGetableFromNsConfiguration'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectsGetableFromNsConfiguration'
         '400':
           description: any failure, no content
     put:
@@ -73,22 +83,27 @@ paths:
           content:
             application/octet-stream:
               schema:
-                $ref: 'https://app.swaggerhub.com/apis/JOACHIMERNST61_1/LoRaNSGW_Commons/0.0.7#/components/schemas/ObjectsPutAbleToNSRegisration'
+                $ref: '#/components/schemas/ObjectsPutableToNSConfiguration'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectsPutableToNSConfiguration'
         responses:
           '202':
             description: success
             content:
               application/octet-stream:
                 schema:
-                  $ref: 'https://app.swaggerhub.com/apis/JOACHIMERNST61_1/LoRaNSGW_Commons/0.0.7#/components/schemas/ObjectsResponsAbleToNSConfiguration'
+                  $ref: '#/components/schemas/ObjectsResponseableToPutToNsConfiguration'
           '400':
             description: error case
             content:
               application/octet-stream:
                 schema:
-                  $ref: 'https://app.swaggerhub.com/apis/JOACHIMERNST61_1/LoRaNSGW_Commons/0.0.7#/components/schemas/ObjectsResponsAbleToNSConfiguration'
+                  $ref: '#/components/schemas/ObjectsResponseableToPutToNsConfiguration'
 
   /{gwEui}/s:
+    parameters:
+    - $ref: '#/components/parameters/gwEui'
     description: periodic statistic and status data
     post:
       description: periodic statistic and status data
@@ -97,23 +112,27 @@ paths:
         content:
           application/octet-stream:
             schema:
-              $ref: 'https://app.swaggerhub.com/apis/JOACHIMERNST61_1/LoRaNSGW_Commons/0.0.7#/components/schemas/ObjectsPutAbleToNSRegisration'
+              $ref: '#/components/schemas/ObjectsPostableToNsStatistics'
+          application/json:
+            schema:
+               $ref: '#/components/schemas/ObjectsPostableToNsStatistics'
       responses:
         '202':
           description: success
           content:
             application/octet-stream:
               schema:
-                $ref: 'https://app.swaggerhub.com/apis/JOACHIMERNST61_1/LoRaNSGW_Commons/0.0.7#/components/schemas/ObjectsResponsAbleToNSConfiguration'
+                $ref: '#/components/schemas/ObjectsResponseableToPostToNsStatistics'
         '400':
           description: error case
           content:
             application/octet-stream:
               schema:
-                $ref: 'https://app.swaggerhub.com/apis/JOACHIMERNST61_1/LoRaNSGW_Commons/0.0.7#/components/schemas/ObjectsResponsAbleToNSConfiguration'      
+                $ref: '#/components/schemas/ObjectsResponseableToPostToNsStatistics'      
 
   /{gwEui}/a:
-    description: any aynchronous events, state changes, and alarms
+    parameters:
+    - $ref: '#/components/parameters/gwEui'
     post:
       description: any configuration data the GW pushes to the NS
       requestBody:
@@ -121,14 +140,17 @@ paths:
         content:
           application/octet-stream:
             schema:
-              $ref: 'https://app.swaggerhub.com/apis/JOACHIMERNST61_1/LoRaNSGW_Commons/0.0.7#/components/schemas/ObjectsPutAbleToNSRegisration'
+              $ref: '#/components/schemas/ObjectsPostableToNsAsync'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ObjectsPostableToNsAsync'
       responses:
         '202':
           description: success
           content:
             application/octet-stream:
               schema:
-                $ref: 'https://app.swaggerhub.com/apis/JOACHIMERNST61_1/LoRaNSGW_Commons/0.0.7#/components/schemas/ObjectsResponsAbleToNSConfiguration'
+                $ref: '#/components/schemas/ObjectsResponseableToPostToNsAsync'
         '400':
           description: error case
           content:
@@ -138,6 +160,13 @@ paths:
                 
 components:
   parameters:
+    qParameter:
+      description: todo
+      in: query
+      name: qParameter
+      required: false
+      schema:
+        type: string
     objectIdPath:
       description: Path param specifying Obj
       in: path
@@ -152,23 +181,16 @@ components:
       required: true
       schema:
         type: integer
-    gwRegionalizationPath:
-      description: Path parametr for Regionalization
-      in: path
-      name: gwRegionalizationPath
-      required: true
-      schema:
-        type: integer
     gwEui:
-      description: todo
-      name: gwEUI 
+      name: gwEui
       in: path
       required: true
       schema:
         type: integer
+      description: todo
         
   schemas:
-    ObjectsPutableToNSRegisration:
+    ObjectsPutableToNsRegistration:
       description: objects supported in PUT request from GW to NS.
       anyOf:
         - $ref: '#/components/schemas/GwIdentity'
@@ -178,22 +200,7 @@ components:
         - $ref: '#/components/schemas/Versions'
         - $ref: '#/components/schemas/RadioUnitCapabilities'
         - $ref: '#/components/schemas/AntennaCapabilities'
-    ObjectsPutableToNSRegistration_json:
-      description: |
-        JSON is for documentation purposes only, do not use in implementation.
-        Use objects as defined in "ObjectsPutableToNSRegistration" instead.
-      type: array
-      items: 
-        type: string
-        enum: 
-         - GwIdentity
-         - GwProfile
-         - Uptime
-         - Inventory
-         - Versions
-         - RadioUnitCapabilities
-         - AntennaCapabilities
-    ObjectsResponsableToNSRegisration:
+    ObjectsResponseableToPutToNsRegistration:
       description: objects supported in PUT Response from NS to GW.
       anyOf:
         - $ref: '#/components/schemas/GwIdentityResponse'
@@ -201,7 +208,44 @@ components:
         - $ref: '#/components/schemas/TimeInfo'
         - $ref: '#/components/schemas/Success'
         - $ref: '#/components/schemas/Failure'
-  
+    ObjectsPutableToNSConfiguration:
+      description: configuration objects the GW may send to the NS
+      anyOf:
+        - $ref: '#/components/schemas/RadioUnitConfig'
+        - $ref: '#/components/schemas/AntennaConfig'     
+        - $ref: '#/components/schemas/DataRateTableConfig'
+        - $ref: '#/components/schemas/ChannelConfig'
+    ObjectsResponseableToPutToNsConfiguration:
+      description: objects the NS may use for responding to putted configuration
+      anyOf:
+        - $ref: '#/components/schemas/Success'
+        - $ref: '#/components/schemas/Failure'
+    ObjectsGetableFromNsConfiguration:
+      description: objects which may be requested by GET request at NS.
+      anyOf:
+        - $ref: '#/components/schemas/RadioUnitConfig'
+        - $ref: '#/components/schemas/AntennaConfig'
+        - $ref: '#/components/schemas/DataRateTableConfig'
+        - $ref: '#/components/schemas/ChannelConfig'
+    ObjectsPostableToNsStatistics:
+      description: objects which may be posted to NS statistics.
+      anyOf:
+        - $ref: '#/components/schemas/Any'
+    ObjectsResponseableToPostToNsStatistics:
+      description: objects which may be posted to NS statistics.
+      anyOf:
+        - $ref: '#/components/schemas/Any'    
+    ObjectsPostableToNsAsync:
+      description: objects being posted asynchronously from GW to NS like Alarms, State changes
+      anyOf:
+        - $ref: '#/components/schemas/RadioUnitEvent'
+    ObjectsResponseableToPostToNsAsync:
+      description: objects which may be posted to NS statistics.
+      anyOf:
+        - $ref: '#/components/schemas/Any'    
+    Any:
+      #placeholder for further work 
+      type: object
     Success:
       type: object
     Failure:
@@ -224,5 +268,16 @@ components:
       type: object
     RadioUnitCapabilities:
       type: object
+    RadioUnitConfig:
+      type: object
+    RadioUnitEvent:
+      type: object
     AntennaCapabilities:
       type: object
+    AntennaConfig:
+      type: object
+    DataRateTableConfig:
+      type: object
+    ChannelConfig:
+      type: object
+      
