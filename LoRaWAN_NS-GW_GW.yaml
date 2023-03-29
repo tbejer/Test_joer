@@ -1,13 +1,9 @@
-# https://app.swaggerhub.com/apis/JOACHIMERNST61_1/ns_gw_gw/0.0.7
 openapi: 3.0.0
 info:
   version: 0.0.7
   title: LoRaWAN GW Interface
   description: LoRaWAN NS-GW_Interface, GW Interface
-
-servers:
-- url: 'https://api.swaggerhub.com/apis/JOACHIMERNST61/ns_gw_gw/0.0.7'
-
+  
 paths:
   /c:
     put:
@@ -21,19 +17,21 @@ paths:
         content:
           application/octet-stream:
             schema:
-              $ref: 'https://app.swaggerhub.com/apis/JOACHIMERNST61_1/LoRaNSGW_Commons/0.0.7#/components/schemas/ObjectsPutableToDevice'
+              $ref: '#/components/schemas/ObjectsPutableToDeviceConfiguration'
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/ObjectsPutableToDeviceConfiguration'
       responses:
         '202':
           description: Objects have been updated.
         '400':
           description: Bad Request.
-
+  /o:
     get:
-      description: |
-        Retrieve ObjectIndex or specific list of objects from a device
+      description: Get a list of objects the NS MAY retrieve from the GW.
       parameters:
-      - $ref: '#/components/parameters/qOption'
-      - $ref: '#/components/parameters/fOption'
+        - $ref: '#/components/parameters/qOption'
+        - $ref: '#/components/parameters/fOption'
       responses:
         '205':
           description: |
@@ -42,8 +40,8 @@ paths:
             application/octet-stream:
               schema:
                 oneOf:
-                - $ref: 'https://app.swaggerhub.com/apis/JOACHIMERNST61_1/LoRaNSGW_Commons/0.0.7#/components/schemas/ObjectsGetAbleFromGW'
-                - $ref: 'https://app.swaggerhub.com/apis/JOACHIMERNST61_1/LoRaNSGW_Commons/0.0.7#/components/schemas/ObjectIndex'
+                - $ref: '#/components/schemas/ObjectsGetableFromDeviceObjects'
+                - $ref: '#/components/schemas/ObjectIndexList'
         '400':
           description: Bad Request.
         '401':
@@ -52,38 +50,45 @@ paths:
           description: Bad Option.
         '403':
           description: Object not found, response won't fit in MTU.
-
-  /c/{objectIdPath}:
+  /o/{objectIdPath}:
     get:
-      description: | 
-        Retrieve single objects from GW.
+      description: Get a list of objects the NS MAY retrieve from the GW.
       parameters:
-      - $ref: '#/components/parameters/objectIdPath'
-      - $ref: '#/components/parameters/fOption'
+        - $ref: '#/components/parameters/objectIdPath'
+        - $ref: '#/components/parameters/qOption'
+        - $ref: '#/components/parameters/fOption'
       responses:
         '205':
-          description: Return the requested TLV.  Full table retreival is allowed.
+          description: |
+            Successful return of requested Objects or ObjectIndex etc...
           content:
             application/octet-stream:
               schema:
-                $ref: 'https://api.swaggerhub.com/domains/tbejer/LoRaNSGWComponents/1.0#/components/schemas/ObjectsGETFromDevice'
+                oneOf:
+                - $ref: '#/components/schemas/ObjectsGetableFromDeviceObjects'
         '400':
           description: Bad Request.
         '401':
           description: Unauthorized.
         '402':
-          description: Bad option.
-        '403':                
-          description: TLV not found, response won't fit in MTU.          
-        '404':
-          description: Not found.          
-        '405':
-          description: Method not allowed.          
-
-
-#
-# Query parameters used for gateway requests
-#
+          description: Bad Option.
+        '403':
+          description: Object not found, response won't fit in MTU.
+  
+  /d: #d for Delete
+    delete:
+      description: toDo
+      responses:
+        '202': 
+          description: successfull de-registration; GW is in commissioned state now
+          content:
+            application/octet-stream:
+              schema:
+                $ref: '#/components/schemas/GwIdentityResponse'
+        '400':
+          description: De-Registrering at GW failed.          
+      
+      
 components:
   parameters:
     qOption:
@@ -107,7 +112,6 @@ components:
       schema:
         type: boolean
         description: default is false.
-        
     objectIdPath:
       description: Path param specifying Obj
       in: path
@@ -115,4 +119,59 @@ components:
       required: true
       schema: 
         type: integer
-        
+    
+    
+  schemas:
+    ObjectsPutableToDeviceConfiguration:
+      description: toDo
+      anyOf:
+        - $ref: '#/components/schemas/RegionOfOperationConfig'
+        - $ref: '#/components/schemas/RadioUnits'
+        - $ref: '#/components/schemas/Antennas'
+        - $ref: '#/components/schemas/DataRateTableConfig'
+        - $ref: '#/components/schemas/ChannelConfiguration'
+    ObjectsGetableFromDeviceObjects:
+      description: toDo
+      anyOf:
+        - $ref: '#/components/schemas/GwIdentity'
+        - $ref: '#/components/schemas/GwProfile'
+        - $ref: '#/components/schemas/Uptime'
+        - $ref: '#/components/schemas/Versions'
+        - $ref: '#/components/schemas/Inventory'
+        - $ref: '#/components/schemas/RegionOfOperationConfig'
+        - $ref: '#/components/schemas/RadioUnits'
+        - $ref: '#/components/schemas/Antennas'
+        - $ref: '#/components/schemas/DataRateTableConfig'
+        - $ref: '#/components/schemas/ChannelConfiguration'
+    ObjectIndexList:
+      description: List of object index
+      type: object
+    Any:
+      #placeholder for further work 
+      type: object
+    Success:
+      type: object
+    Failure:
+      type: object
+    GwIdentity:
+      type: object
+    GwIdentityResponse:
+      type: object
+    GwProfile:
+      type: object
+    Uptime:
+      type: object
+    Versions:
+      type: object
+    Inventory:
+      type: object
+    RegionOfOperationConfig:
+      type: object
+    RadioUnits:
+      type: object
+    Antennas:
+      type: object
+    DataRateTableConfig:
+      type: object
+    ChannelConfiguration:
+      type: object
