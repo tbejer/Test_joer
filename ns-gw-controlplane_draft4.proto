@@ -263,12 +263,17 @@ message RadioUnits {
 
 //read only description of the radio unit capabilities.
 message RadioUnitCapabilities {
+    enum TxModulation {
+        LORA = 0;
+        FSK  = 1;
+    }
     uint32 id = 1;               //id of the radio unit
     uint32 nb_multi_css = 2;     //number of multi css channels supported
     uint32 nb_single_css = 3;    //number of single css channels supported
     uint32 nb_fsk = 4;           //number of fsk channels supported
     uint32 nb_lrfhss = 5;        //number of lr-fhss channels supported
     bool fine_time_stamp = 6;    //true if the radio unit supports fine time stamping
+    repeated TxModulation = 7;   //Modulations this radio unit supports
 }
 
 //to be defined
