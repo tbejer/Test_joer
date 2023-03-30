@@ -65,6 +65,12 @@ message SingleObject {
     }
 }
 
+// ObjectIds is used in getRequests as qOption for defining the list of objects to be retrieved.
+// Valide numbers are taken from the AllObjects message.
+message ObjectIds{
+    repeated uint32 q = 1
+}
+
 
 // ***************************************** Generic Response opbjects ********************************
 // generic messages MAY be used in the response message after processing a list of objects, if
@@ -204,12 +210,13 @@ message Versions {
 
 // read only inventory description
 message Inventory {
-    uint32 nb_interfaces = 3;             //Number of WAN Interfaces
-    uint32 nb_radio_units = 4;            //Number of radio units of the GW
-    uint32 nb_antennas = 5;               //Number of LoRa Antennas
-    uint32 nb_CPUs = 6;                   //Number of CPUs for system performance
-    uint32 ram = 8;                       //size of RAM in MByte for memory usage
-    uint32 nb_file_systems = 9;           //File systems for usage statistics. 
+    uint32 nb_interfaces = 1;             //Number of WAN Interfaces
+    uint32 nb_radio_units = 2;            //Number of radio units of the GW
+    uint32 nb_antennas = 3;               //Number of LoRa Antennas
+    uint32 nb_CPUs = 4;                   //Number of CPUs for system performance
+    uint32 ram = 5;                       //size of RAM in MByte for memory usage
+    uint32 nb_file_systems = 6;           //File systems for usage statistics. 
+    bool fine_time_stamping = 7;          //true if fts is supported, false or ommited otherwise
 }
 
 
