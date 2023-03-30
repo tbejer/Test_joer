@@ -31,8 +31,14 @@ paths:
               schema: 
                 $ref: '#/components/schemas/ObjectsPutableToNsRegistration'
       responses:
-        '202':
-          description: Successfull Registration of the GW
+        '201':
+          description: Successfull Registration of the GW, NS resources created
+          content:
+            application/octet-stream:
+              schema:
+                $ref: '#/components/schemas/ObjectsResponseableToPutToNsRegistration'
+        '204':
+          description: Successfull Re-Registration of the GW, NS resources updated
           content:
             application/octet-stream:
               schema:
