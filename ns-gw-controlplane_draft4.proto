@@ -99,11 +99,9 @@ enum GwState {
     GW_INITIALIZED = 3;
 }
 
-//For GW registration the GwIdentity object is send in PUT request to the NS. 
+//For GW registration the GwIdentity object is send in PUT request to the NS, together wiht 
+//other objects.  
 //GW registration is started after a successfull WSS session is established between NS and GW.
-//For GW de-registration the GwIdentity object is sent in a DELETE request to the NS.
-//In any case the GW will responde with a GWResponse message. 
-
 message GwIdentity {
 
   //mandatory: Extended Unique Identifier (EUI-64) of the gateway. Each gateway SHALL have an assigned gw_eui.
@@ -112,6 +110,8 @@ message GwIdentity {
 
 }
 
+//The GwIdentityResponse Object is returned from the NS after a put to registration 
+//or after a Delete from either the GW to NS or vice versa.
 message GwIdentityResponse {
     message GwIdentitiySuccess{
         fixed32 gw_addr = 1;
@@ -122,6 +122,7 @@ message GwIdentityResponse {
             GW_ID_UNKNOWN_ERROR = 0;
             GW_ID_NOT_KNOWN = 1;
             GW_ID_NOT_ALLOWED = 2;
+            GW_ID_DEREGISTRATION_ERROR = 3;
         }
 
         GwIdentityError error = 1;
@@ -206,6 +207,8 @@ message Versions {
     string fpga_version = 5;
     string customizing = 6;
     string patch_level = 7;
+    uint32 configuration_version = 8;
+    uint32 capabilites_version = 9;
 }
 
 // read only inventory description
@@ -273,7 +276,7 @@ message RadioUnitCapabilities {
     uint32 nb_fsk = 4;           //number of fsk channels supported
     uint32 nb_lrfhss = 5;        //number of lr-fhss channels supported
     bool fine_time_stamp = 6;    //true if the radio unit supports fine time stamping
-    repeated TxModulation = 7;   //Modulations this radio unit supports
+    repeated TxModulation tx_modulations = 7;   //Modulations this radio unit supports
 }
 
 //to be defined
