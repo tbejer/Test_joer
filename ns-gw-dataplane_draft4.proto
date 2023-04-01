@@ -18,6 +18,36 @@ syntax = "proto3";
 
 package lora_alliance.nsgw.data_plane.draft04;
 
+message Payload {
+    repeated SingleObject single_object = 1;
+}
+
+message SingleObject {
+    oneof AllObjects {
+
+        Success success = 1;
+        Failure failure = 2;
+
+        Uplink uplink = 11;
+        UplinkFineTimestamps ul_fts = 12;
+
+        ClassADownlink class_a_dl = 21;
+
+        ClassBUnicast class_b_unicast = 22;
+
+        ClassCUnicast class_c_unicast = 23; 
+
+        ClassBAndCMulticast class_b_c_multicast = 24; 
+
+        DownlinkAcknowledge dl_acknowledgement = 25;
+        
+    }
+}
+
+message Success {}
+message Failure {}
+
+
 // Indicating the clock source of the GW.
 // it is the accuracy that is of interest
 
@@ -68,7 +98,8 @@ message Uplink {
 
     //Late is set to true, if the UL packet is temporary stored at the GW due to backhauling congestions.
     //the default is false. Late may be ommited if the UL is not late. 
-    bool late = 4
+    bool late = 4;
+
     // Time the uplink arrived, measured at the end of the message
     AbsoluteTime absolute_time = 5;
 
@@ -85,7 +116,7 @@ message Uplink {
     uint32 datarate = 9;
     
     // Channelplan index of the datarate, according internal 
-    uint32 cp_id = 10
+    uint32 cp_id = 10;
 
     // Radio info, for each receivement of the message there are separate
     // radio infos gathered and forwarded to the NS.
@@ -94,6 +125,7 @@ message Uplink {
 
     repeated RadioInfo radio_info = 11;
 }
+
 
 message RadioInfo {
     // Antenna ID.

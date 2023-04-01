@@ -68,7 +68,7 @@ message SingleObject {
 // ObjectIds is used in getRequests as qOption for defining the list of objects to be retrieved.
 // Valide numbers are taken from the AllObjects message.
 message ObjectIds{
-    repeated uint32 q = 1
+    repeated uint32 q = 1;
 }
 
 
@@ -113,7 +113,7 @@ message GwIdentity {
 //The GwIdentityResponse Object is returned from the NS after a put to registration 
 //or after a Delete from either the GW to NS or vice versa.
 message GwIdentityResponse {
-    message GwIdentitiySuccess{
+    message GwIdentitySuccess{
         fixed32 gw_addr = 1;
     }
     
@@ -235,7 +235,7 @@ message RegionOfOperationConfig {
 //Allowed frequency ranges, max conducted or emmited power, duty cycle limitations, and dwell time limitations. 
 message RegionOfOperationResponse {
     message RegionOfOperationSuccess {
-        gwState gw_state = 1;             //GW state after processing the region of operation configuration.
+        GwState gw_state = 1;             //GW state after processing the region of operation configuration.
     }
     message RegionOfOperationFailure {
         enum RegionOfOperationError{
