@@ -1,0 +1,80 @@
+openapi: 3.0.0
+info:
+  version: 0.0.7
+  title: LoRaWAN NS-GW NS dataplane interface
+  description: LoRaWAN NS-GW dataplane, NS Interface
+
+path:
+  /{geEUI}/u:
+    description: uplinks resource of NS dataplane
+    parameters:
+    - $ref: '#/components/parameters/gwEui'
+    post:
+      description: |
+        Uplinks are POSTed from GW to NS to the /u resource. UPlink post are NOT acknowledged.
+      requestBody:
+        required: true
+        content:
+          application/octet-stream:
+            schema:
+              $ref: '#/components/schemas/ObjectsPostableToNsUplinks'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ObjectsPostableToNsUplinks'        
+      respones:
+        '100':
+          description: No response is sent to an uplink being received at the NS.
+        '400':
+          descritpion: Error message are responded, if there is a problem at the NS
+  /{gwEui}/f:
+    description: fine time stamps (fts) if sent indemendenty of the uplink payload
+    parameters:
+    - $ref: '#/components/parameters/gwEui'
+    post:
+      description: |
+        Fine Time Staps (fts) are POSTed from GW to NS or another server to the /f resource. FTSs post are NOT acknowledged.
+      requestBody:
+        required: true
+        content:
+          application/octet-stream:
+            schema:
+              $ref: '#/components/schemas/ObjectsPostableToNsFts'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ObjectsPostableToNsFts'        
+      respones:
+        '100':
+          description: No response is sent to an fts being received at the NS.
+        '400':
+          descritpion: Error message are responded, if there is a problem at the NS
+components:
+  parameters:
+    gwEui:
+      name: gwEui
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: todo
+  schemas:
+    ObjectsPostableToNsUplinks:
+      description: |
+        the payload MAY contain one or more objects representing an uplink.
+        multiple uplinks MAY be used, it the GW internal buffer was used
+        for storing "late" uplinks
+      anyOf:
+      - $ref: '#/components/schemas/Uplink'
+    Uplink:
+      type: Object
+    ObjectsPostableToNsFts:
+      description: |
+        One or multiple fine time stamp infos MAY be sent to the NS or external solver.
+      anyOf:
+      - $ref: '#/components/schemas/UplinkFineTimestamps'
+    Uplink:
+      type: Object
+    UplinkFineTimestamps:
+      type: Object
+
+
+  
