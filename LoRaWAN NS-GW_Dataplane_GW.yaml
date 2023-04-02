@@ -4,7 +4,7 @@ info:
   title: LoRaWAN NS-GW GW dataplane interface
   description: LoRaWAN NS-GW dataplane, GW Interface
 
-path:
+paths:
   /d:
     post:
       description: resource for downlinks
@@ -20,8 +20,6 @@ path:
             schema:
               $ref: '#/components/schemas/ObjectsPostableToDownlink'
       responses:
-        description: |
-          toDo
         '202':
           description: success
           content:
@@ -52,5 +50,5 @@ components:
       type: object
     ClassBAndCMulticast:
       type: object
-    DownlinksAcknowledgment:
+    DownlinkAcknowledgement:
       type: object
