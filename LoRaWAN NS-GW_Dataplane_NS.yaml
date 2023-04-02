@@ -4,8 +4,8 @@ info:
   title: LoRaWAN NS-GW NS dataplane interface
   description: LoRaWAN NS-GW dataplane, NS Interface
 
-path:
-  /{geEUI}/u:
+paths:
+  /{gwEui}/u:
     description: uplinks resource of NS dataplane
     parameters:
     - $ref: '#/components/parameters/gwEui'
@@ -21,11 +21,11 @@ path:
           application/json:
             schema:
               $ref: '#/components/schemas/ObjectsPostableToNsUplinks'        
-      respones:
+      responses:
         '100':
           description: No response is sent to an uplink being received at the NS.
         '400':
-          descritpion: Error message are responded, if there is a problem at the NS
+          description: Error message are responded, if there is a problem at the NS
   /{gwEui}/f:
     description: fine time stamps (fts) if sent indemendenty of the uplink payload
     parameters:
@@ -42,11 +42,11 @@ path:
           application/json:
             schema:
               $ref: '#/components/schemas/ObjectsPostableToNsFts'        
-      respones:
+      responses:
         '100':
           description: No response is sent to an fts being received at the NS.
         '400':
-          descritpion: Error message are responded, if there is a problem at the NS
+          description: Error message are responded, if there is a problem at the NS
 components:
   parameters:
     gwEui:
@@ -64,17 +64,12 @@ components:
         for storing "late" uplinks
       anyOf:
       - $ref: '#/components/schemas/Uplink'
-    Uplink:
-      type: Object
     ObjectsPostableToNsFts:
       description: |
         One or multiple fine time stamp infos MAY be sent to the NS or external solver.
       anyOf:
       - $ref: '#/components/schemas/UplinkFineTimestamps'
     Uplink:
-      type: Object
+      type: object
     UplinkFineTimestamps:
-      type: Object
-
-
-  
+      type: object
