@@ -1,3 +1,8 @@
+
+//****************************************************
+// Protobuf definition file of the controlplane of the LoRaWAN NS-GW Interface
+//****************************************************
+
 //****************************************************
 // The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 // "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
@@ -7,7 +12,9 @@
 //****************************************************
 
 //***************************
-// Version based on list of singleOpjects payload, requested by GET, POST, PUT, or DELETE
+// This file describes the data exchanged between NS and GW over a restful interface, where
+// the exchanged payload of requests and responses is formed as a list of singleOpjects.
+// See OpenAPI documentation the specification of verbs, payloads and resources. 
 //***************************
 
 syntax = "proto3";

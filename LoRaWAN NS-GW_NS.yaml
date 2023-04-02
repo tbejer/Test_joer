@@ -1,8 +1,7 @@
-# https://app.swaggerhub.com/apis/JOACHIMERNST61_1/ns_gw_ns/0.0.7
 openapi: 3.0.0
 info:
   version: 0.0.7
-  title: LoRaWAN NSGW_NS
+  title: LoRaWAN NS-GW NS controlplane interface
   description: LoRaWAN NS-GW_Interface, NS Interfacce
 
 servers:
@@ -156,13 +155,13 @@ paths:
           content:
             application/octet-stream:
               schema:
-                $ref: '#/components/schemas/ObjectsResponseableToPostToNsAsync'
+                $ref: '#/components/schemas/DownLinkAcknowledgment'
         '400':
           description: error case
           content:
             application/octet-stream:
               schema:
-                $ref: 'https://app.swaggerhub.com/apis/JOACHIMERNST61_1/LoRaNSGW_Commons/0.0.7#/components/schemas/ObjectsResponsAbleToNSConfiguration'
+                $ref: '#/components/schemas/ObjectsResponsAbleToNSConfiguration'
                 
 components:
   parameters:

@@ -1,0 +1,56 @@
+openapi: 3.0.0
+info:
+  version: 0.0.7
+  title: LoRaWAN NS-GW GW dataplane interface
+  description: LoRaWAN NS-GW dataplane, GW Interface
+
+path:
+  /d:
+    post:
+      description: resource for downlinks
+      requestBody:
+        description: |
+          Downlink
+        required: true
+        content:
+          application/octet-stream:
+            schema:
+              $ref: '#/components/schemas/ObjectsPostableToDownlink'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ObjectsPostableToDownlink'
+      responses:
+        description: |
+          toDo
+        '202':
+          description: success
+          content:
+            application/octet-stream:
+              schema:
+                $ref: '#/components/schemas/ObjectsResponseableToPostsToDownlink'
+components:
+  schemas:
+    ObjectsPostableToDownlink:
+      description: toDo
+      oneOf:
+        - $ref: '#/components/schemas/ClassADownlink'
+        - $ref: '#/components/schemas/ClassBUnicast'
+        - $ref: '#/components/schemas/ClassCUnicast'
+        - $ref: '#/components/schemas/ClassBAndCMulticast'
+    ObjectsResponseableToPostsToDownlink:
+      description: toDo
+      oneOf:
+        - $ref: '#/components/schemas/DownlinkAcknowledgement'
+    
+  
+
+    ClassADownlink:
+      type: object
+    ClassBUnicast:
+      type: object
+    ClassCUnicast:
+      type: object
+    ClassBAndCMulticast:
+      type: object
+    DownlinksAcknowledgment:
+      type: object

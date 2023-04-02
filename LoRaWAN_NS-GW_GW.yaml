@@ -1,8 +1,8 @@
 openapi: 3.0.0
 info:
   version: 0.0.7
-  title: LoRaWAN GW Interface
-  description: LoRaWAN NS-GW_Interface, GW Interface
+  title: LoRaWAN NS-GW GW controlplane interface
+  description: LoRaWAN NS-GW controlplane, GW Interface
   
 paths:
   /c:
