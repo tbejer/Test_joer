@@ -47,16 +47,18 @@ message SingleObject {
         RegionOfOperationConfig region_of_operation = 21;
         RegionOfOperationResponse region_of_ops_response = 22;
 
-        RadioUnits radio_units = 30;
-        RadioUnitCapabilities radio_unit_capabilities = 31;
-        RadioUnitConfig radio_unit_config = 32;
-        RadioUnitResponse radio_unit_resp = 33;
-        RadioUnitEvent radio_unit_event = 34;
+        RadioUnitsListCapabilities radio_units_list_capabilities = 30;
+        RadioUnitsListConfig radio_units_list_config = 31;
+        RadioUnitCapabilities radio_unit_capabilities = 32;
+        RadioUnitConfig radio_unit_config = 33;
+        RadioUnitResponse radio_unit_resp = 34;
+        RadioUnitEvent radio_unit_event = 35;
 
-        Antennas antennas = 40;
-        AntennaCapabilities antenna_capabilities = 41;
-        AntennaConfig antenna_config = 42;
-        AntennaResponse antenna_response = 43;
+        AntennasListCapabilities antennas_list_capabilities = 40;
+        AntennasListConfig antennas_list_config = 41;
+        AntennaCapabilities antenna_capabilities = 42;
+        AntennaConfig antenna_config = 43;
+        AntennaResponse antenna_response = 44;
 
         DataRateTableConfig dr_table_config = 51;
         DataRateTableResponse dr_table_response = 52;
@@ -242,7 +244,6 @@ message RegionOfOperationConfig {
 //Allowed frequency ranges, max conducted or emmited power, duty cycle limitations, and dwell time limitations. 
 message RegionOfOperationResponse {
     message RegionOfOperationSuccess {
-        GwState gw_state = 1;             //GW state after processing the region of operation configuration.
     }
     message RegionOfOperationFailure {
         enum RegionOfOperationError{
@@ -260,15 +261,19 @@ message RegionOfOperationResponse {
         RegionOfOperationFailure region_of_operation_failure = 2;
     }
 
+    GwState gw_state = 3;             //GW state after processing the region of operation configuration.
+
 }
 
 
 // ******************************************** Radio Unit messages *********************************
 
-//RadioUnits MAY contain both, descritpion of the capabilities and configuration.
-message RadioUnits {
+message RadioUnitsListCapabilities {
     repeated RadioUnitCapabilities radio_units_capabilities = 1;
-    repeated RadioUnitConfig radio_units_config = 2;
+}
+
+message RadioUnitsListConfig {
+    repeated RadioUnitConfig radio_units_config = 1;
 }
 
 //read only description of the radio unit capabilities.
@@ -320,10 +325,13 @@ enum AntennaMode {
     RX_TX_OFF = 2;            //Antenna SHALL not be used
 }
 
-//Antennas MAY contain both, description of the capabilities and the configuration
-message Antennas {
+
+message AntennasListCapabilities{
     repeated AntennaCapabilities antennas_capabilities = 1;
-    repeated AntennaConfig antennas_configs= 2;
+}
+
+message AntennasListConfig{
+    repeated AntennaConfig antennas_configs= 1;
 }
 
 //read-only capabilities of the antenna
@@ -422,14 +430,16 @@ message DataRateRow {
 // ******************************************** Channel Configuration messages *********************************
 
 
-//Channel configuration table: There is one ChannelConfiguration per GW, holding all defined RXChannels. 
-//The table is identified by the ID, the label and version are supportin attributes. The ID is defined by
-//the NS and re-used for identical ChannelConfigurations. 
-//ChannelConfiguratin MAY be sent from NS to GW or requested by GW from NS or requested by NS from GW.
-//If the ChannelConfiguration is requested by the NS, only the ID, label, and version are reported, except
-//the query parameter f is set to True. Then the full table is sent in the resonse. 
-//As default, the GW has no ChannelConfiguration preloaded. 
-//Channel Configuration abborts at if a channel configuration causes an error. 
+// Channel configuration table: There is one ChannelConfiguration per GW, holding all defined RXChannels. 
+// The table is identified by the ID, the label and version are supportin attributes. The ID is defined by
+// the NS and re-used for identical ChannelConfigurations. 
+// ChannelConfiguratin MAY be sent from NS to GW or requested by GW from NS or requested by NS from GW.
+// If the ChannelConfiguration is requested by the NS, only the ID, label, and version are reported, except
+// the query parameter f is set to True. Then the full table is sent in the resonse. 
+// As default, the GW has no ChannelConfiguration preloaded. 
+// Channel Configuration abborts at if a channel configuration causes an error. 
+// After successfull channel configuration, the GW is in initialized state. 
+
 message ChannelConfiguration {
     uint32 id = 1;             //id is defined by the NS. Identical ChannelConfigs on different GWs shall have the same ID.
     string label = 2;
@@ -459,6 +469,8 @@ message ChannelConfigResponse {
         ChannelConfigSuccess channel_config_success = 1;  //all RX-Channels are successfully installed
         ChannelConfigFailure channel_config_failure = 2;  //at least one of the channels could not be configured. 
     } 
+
+    GwState gw_state = 3;             //GW state after processing the Channel configuration.
 
 }
 
