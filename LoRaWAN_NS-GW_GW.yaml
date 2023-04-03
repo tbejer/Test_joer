@@ -134,8 +134,10 @@ components:
       description: toDo
       anyOf:
         - $ref: '#/components/schemas/RegionOfOperationConfig'
-        - $ref: '#/components/schemas/RadioUnits'
-        - $ref: '#/components/schemas/Antennas'
+        - $ref: '#/components/schemas/RadioUnitConfig'
+        - $ref: '#/components/schemas/RadioUnitsListConfig'
+        - $ref: '#/components/schemas/AntennaConfig'
+        - $ref: '#/components/schemas/AntennasListConfig'
         - $ref: '#/components/schemas/DataRateTableConfig'
         - $ref: '#/components/schemas/ChannelConfiguration'
     ObjectsGetableFromDeviceObjects:
@@ -147,8 +149,8 @@ components:
         - $ref: '#/components/schemas/Versions'
         - $ref: '#/components/schemas/Inventory'
         - $ref: '#/components/schemas/RegionOfOperationConfig'
-        - $ref: '#/components/schemas/RadioUnits'
-        - $ref: '#/components/schemas/Antennas'
+        - $ref: '#/components/schemas/RadioUnitsListConfig'
+        - $ref: '#/components/schemas/AntennasListConfig'
         - $ref: '#/components/schemas/DataRateTableConfig'
         - $ref: '#/components/schemas/ChannelConfiguration'
     ObjectIndexList:
@@ -175,9 +177,13 @@ components:
       type: object
     RegionOfOperationConfig:
       type: object
-    RadioUnits:
+    RadioUnitConfig:
       type: object
-    Antennas:
+    RadioUnitsListConfig:
+      type: object
+    AntennaConfig:
+      type: object
+    AntennasListConfig:
       type: object
     DataRateTableConfig:
       type: object

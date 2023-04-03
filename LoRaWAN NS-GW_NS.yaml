@@ -90,29 +90,29 @@ paths:
         '400':
           description: any failure, no content
     put:
-        description: any configuration data the GW pushes to the NS
-        requestBody:
-          required: true
+      description: any configuration data the GW pushes to the NS
+      requestBody:
+        required: true
+        content:
+          application/octet-stream:
+            schema:
+              $ref: '#/components/schemas/ObjectsPutableToNSConfiguration'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ObjectsPutableToNSConfiguration'
+      responses:
+        '202':
+          description: success
           content:
             application/octet-stream:
               schema:
-                $ref: '#/components/schemas/ObjectsPutableToNSConfiguration'
-            application/json:
+                $ref: '#/components/schemas/ObjectsResponseableToPutToNsConfiguration'
+        '400':
+          description: error case
+          content:
+            application/octet-stream:
               schema:
-                $ref: '#/components/schemas/ObjectsPutableToNSConfiguration'
-        responses:
-          '202':
-            description: success
-            content:
-              application/octet-stream:
-                schema:
-                  $ref: '#/components/schemas/ObjectsResponseableToPutToNsConfiguration'
-          '400':
-            description: error case
-            content:
-              application/octet-stream:
-                schema:
-                  $ref: '#/components/schemas/ObjectsResponseableToPutToNsConfiguration'
+                $ref: '#/components/schemas/ObjectsResponseableToPutToNsConfiguration'
 
   /{gwEui}/s:
     parameters:
@@ -212,7 +212,9 @@ components:
         - $ref: '#/components/schemas/Inventory'
         - $ref: '#/components/schemas/Versions'
         - $ref: '#/components/schemas/RadioUnitCapabilities'
+        - $ref: '#/components/schemas/RadioUnitsListCapabilities'
         - $ref: '#/components/schemas/AntennaCapabilities'
+        - $ref: '#/components/schemas/AntennasListCapabilities'
     ObjectsResponseableToPutToNsRegistration:
       description: objects supported in PUT Response from NS to GW.
       anyOf:
@@ -225,7 +227,9 @@ components:
       description: configuration objects the GW may send to the NS
       anyOf:
         - $ref: '#/components/schemas/RegionOfOperationConfig'
+        - $ref: '#/components/schemas/RadioUnitsListConfig'
         - $ref: '#/components/schemas/RadioUnitConfig'
+        - $ref: '#/components/schemas/AntennasListConfig'
         - $ref: '#/components/schemas/AntennaConfig'     
         - $ref: '#/components/schemas/DataRateTableConfig'
         - $ref: '#/components/schemas/ChannelConfig'
@@ -238,7 +242,9 @@ components:
       description: objects which may be requested by GET request at NS.
       anyOf:
         - $ref: '#/components/schemas/RegionOfOperationConfig'
+        - $ref: '#/components/schemas/RadioUnitsListConfig'
         - $ref: '#/components/schemas/RadioUnitConfig'
+        - $ref: '#/components/schemas/AntennasListConfig'
         - $ref: '#/components/schemas/AntennaConfig'
         - $ref: '#/components/schemas/DataRateTableConfig'
         - $ref: '#/components/schemas/ChannelConfig'
@@ -281,11 +287,15 @@ components:
       type: object
     Versions:
       type: object
-    RegionOfOperation:
+    RegionOfOperationConfig:
       type: object
     RadioUnitCapabilities:
       type: object
+    RadioUnitsListCapabilities:
+      type: object
     RadioUnitConfig:
+      type: object
+    RadioUnitsListConfig:
       type: object
     RadioUnitEvent:
       type: object
