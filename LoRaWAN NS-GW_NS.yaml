@@ -163,13 +163,13 @@ paths:
           content:
             application/octet-stream:
               schema:
-                $ref: '#/components/schemas/DownLinkAcknowledgment'
+                $ref: '#/components/schemas/Success'
         '400':
           description: error case
           content:
             application/octet-stream:
               schema:
-                $ref: '#/components/schemas/ObjectsResponsAbleToNSConfiguration'
+                $ref: '#/components/schemas/Failure'
                 
 components:
   parameters:
@@ -224,6 +224,7 @@ components:
     ObjectsPutableToNSConfiguration:
       description: configuration objects the GW may send to the NS
       anyOf:
+        - $ref: '#/components/schemas/RegionOfOperationConfig'
         - $ref: '#/components/schemas/RadioUnitConfig'
         - $ref: '#/components/schemas/AntennaConfig'     
         - $ref: '#/components/schemas/DataRateTableConfig'
@@ -236,6 +237,7 @@ components:
     ObjectsGetableFromNsConfiguration:
       description: objects which may be requested by GET request at NS.
       anyOf:
+        - $ref: '#/components/schemas/RegionOfOperationConfig'
         - $ref: '#/components/schemas/RadioUnitConfig'
         - $ref: '#/components/schemas/AntennaConfig'
         - $ref: '#/components/schemas/DataRateTableConfig'
@@ -278,6 +280,8 @@ components:
     Inventory:
       type: object
     Versions:
+      type: object
+    RegionOfOperationConfig:
       type: object
     RadioUnitCapabilities:
       type: object
