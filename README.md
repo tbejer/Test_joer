@@ -44,7 +44,7 @@ The control plane API defines the exchange of GW capabilities and configuration 
   |                  GW.GET Configuration from NS/<gwEUI>/c         |
   |                  or >>>                                         | 
   |                  GW.PUT Configuration to NS/<gwEUI>/c           |
-  |                  NS.GET Configuration from NS/<gwEUI>/c         |
+  |                  NS.GET Configuration from GW/c         |
   |                  NS.GET Capabilities from GW/c                  |
   +-----------------------------------------------------------------+
   | Operation        <<< >>>                                        |
