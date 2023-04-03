@@ -40,11 +40,12 @@ The control plane API defines the exchange of GW capabilities and configuration 
   |                  GW.PUT Identity and Capabilities to NS/r       |
   +-----------------------------------------------------------------+
   | Configuration    either <<<                                     |
+  |                  NS.GET Capabilities from GW/c                  |
   |                  NS.PUT Configuration to GW/c                   |
   |                  GW.GET Configuration from NS/<gwEUI>/c         |
   |                  or >>>                                         | 
   |                  GW.PUT Configuration to NS/<gwEUI>/c           |
-  |                  NS.GET Configuration from GW/c         |
+  |                  NS.GET Configuration from GW/c                 |
   |                  NS.GET Capabilities from GW/c                  |
   +-----------------------------------------------------------------+
   | Operation        <<< >>>                                        |
