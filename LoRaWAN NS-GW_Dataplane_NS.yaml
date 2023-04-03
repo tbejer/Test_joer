@@ -1,3 +1,11 @@
+#****************************************************
+# The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+# "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+# "OPTIONAL" in this document are to be interpreted as described in BCP
+# 14 [RFC2119] [RFC8174] when, and only when, they appear in all
+# capitals
+#****************************************************
+
 openapi: 3.0.0
 info:
   version: 0.0.7
@@ -23,9 +31,30 @@ paths:
               $ref: '#/components/schemas/ObjectsPostableToNsUplinks'        
       responses:
         '100':
-          description: No response is sent to an uplink being received at the NS.
+          description: No response is sent if there is no problem at NS
         '400':
           description: Error message are responded, if there is a problem at the NS
+  /{gwEui}/ack:
+    description: Downlink acknowledgement messages are sent asynchronously, as separete post message
+    parameters:
+    - $ref: '#/components/parameters/gwEui'
+    post:
+      description: |
+        Acknowledgement messages for downlinks.
+      requestBody:
+        required: true
+        content:
+          application/octet-stream:
+            schema:
+              $ref: '#/components/schemas/ObjectsPostableToNsAcknowledgement'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ObjectsPostableToNsAcknowledgement'        
+      responses:
+        '202':
+          description: Success.
+        '400':
+          description: Error message are responded, if there is a problem at the NS  
   /{gwEui}/f:
     description: fine time stamps (fts) if sent indemendenty of the uplink payload
     parameters:
@@ -44,7 +73,7 @@ paths:
               $ref: '#/components/schemas/ObjectsPostableToNsFts'        
       responses:
         '100':
-          description: No response is sent to an fts being received at the NS.
+          description: No response is sent if there are no problems.
         '400':
           description: Error message are responded, if there is a problem at the NS
 components:
@@ -69,7 +98,14 @@ components:
         One or multiple fine time stamp infos MAY be sent to the NS or external solver.
       anyOf:
       - $ref: '#/components/schemas/UplinkFineTimestamps'
+    ObjectsPostableToNsAcknowledgement:
+      description: |
+        toDo
+      anyOf:
+      - $ref: '#/components/schemas/DownlinkAcknowledgement'
     Uplink:
       type: object
     UplinkFineTimestamps:
+      type: object
+    DownlinkAcknowledgement:
       type: object

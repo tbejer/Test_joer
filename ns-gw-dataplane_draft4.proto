@@ -44,6 +44,8 @@ message SingleObject {
     }
 }
 
+//************* Supporting Objects *************************
+
 message Success {}
 message Failure {}
 
@@ -60,10 +62,10 @@ enum ClockSource {
 
 // polarity, used for downlink radio definition
 // Note: instead of polarity one could define UL, DL, Beacon
-enum Polarity {
-    INVERTED = 0;      //used for class A, B, and C downlinks
-    NOT_INVERTED = 1;  //used for beacons and device uplinks
-}
+//enum Polarity {
+//    INVERTED = 0;      //used for class A, B, and C downlinks
+//    NOT_INVERTED = 1;  //used for beacons and device uplinks
+//}
 
 // AbsoluteTime in seconds and fraction of seconds.
 // the absolute time is GPS zero.
@@ -197,7 +199,7 @@ message ClassADownlinkItem {
 
     // Polarity;
     // if polarity is not present, then the default value INVERTED is considered.
-    Polarity polarity = 6;
+    //Polarity polarity = 6;
 
     // Datarate, according Regional Parameter document and RFRegion
     uint32 datarate = 7;
@@ -227,7 +229,7 @@ message GenericDownlinkItem {
 
     // Polarity;
     // if polarity is not present, then the default value inverted is considered.
-    Polarity polarity = 6;
+    //Polarity polarity = 6;
 
     // Datarate, according Regional Parameter document and RFRegion
     uint32 datarate = 7;
@@ -257,7 +259,7 @@ message WindowDownlinkItem {
 
     // Polarity;
     // if polarity is not present, then the default value inverted is considered.
-    Polarity polarity = 6;
+    //Polarity polarity = 6;
 
     // Datarate, according Regional Parameter document and RFRegion
     uint32 datarate = 7;
@@ -401,6 +403,8 @@ message DownlinkAcknowledge {
 
         repeated DownlinkItemAcknowledge dl_items_ackn = 1;
     }
+
+    uint32 downlink_id = 1;
 
     oneof dl_ackn {
         DetailedAckn  detailed_dl_ackn = 2;

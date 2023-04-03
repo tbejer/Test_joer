@@ -1,3 +1,11 @@
+#****************************************************
+# The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+# "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+# "OPTIONAL" in this document are to be interpreted as described in BCP
+# 14 [RFC2119] [RFC8174] when, and only when, they appear in all
+# capitals
+#****************************************************
+
 openapi: 3.0.0
 info:
   version: 0.0.7
@@ -20,12 +28,8 @@ paths:
             schema:
               $ref: '#/components/schemas/ObjectsPostableToDownlink'
       responses:
-        '202':
-          description: success
-          content:
-            application/octet-stream:
-              schema:
-                $ref: '#/components/schemas/ObjectsResponseableToPostsToDownlink'
+        '100':
+          description: success, but acknowledgment is sent in a separate message.
 components:
   schemas:
     ObjectsPostableToDownlink:
@@ -35,12 +39,6 @@ components:
         - $ref: '#/components/schemas/ClassBUnicast'
         - $ref: '#/components/schemas/ClassCUnicast'
         - $ref: '#/components/schemas/ClassBAndCMulticast'
-    ObjectsResponseableToPostsToDownlink:
-      description: toDo
-      oneOf:
-        - $ref: '#/components/schemas/DownlinkAcknowledgement'
-    
-  
 
     ClassADownlink:
       type: object
@@ -50,5 +48,5 @@ components:
       type: object
     ClassBAndCMulticast:
       type: object
-    DownlinkAcknowledgement:
-      type: object
+#    DownlinkAcknowledgement:
+#      type: object

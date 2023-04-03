@@ -72,6 +72,8 @@ The control plane content respective the objects being exchanged are described i
 The data plane describes the interface related to LoRaWAN traffic and devices respective multicast groups. 
 
 ### Data plane API description
-The dataplane APIs 
+The dataplane APIs are divded in NS APIs and GW APIs. 
+Acknowledgement messages to Downlinks are posted from GW to NS in separate messages, as otherwise there might be a timeout.
 
 ### Data plane content description 
+The content and datastructures for the data plane are described in ns-gw-dataplane*.proto
